@@ -13,8 +13,7 @@ from bottle import template
 # development server
 from bottle import run 
 
-
-from bottle import default_app  #change made 9/29/2021, separate line b/c I don't know where it's supposed to go
+from bottle import default_app #Update to main from desktop!
 
 # ---------------------------
 # web application routes
@@ -127,9 +126,8 @@ def delete_task():
     # return 200 Success
     response.headers['Content-Type'] = 'application/json'
     return json.dumps({'success': True})
-
- #change one 9/29/2021
-application = default_app()
+    
+application = default_app() #Update to main from desktop!
 if __name__ == "__main__":
 
     run(host='0.0.0.0', port=8080, debug=True)
