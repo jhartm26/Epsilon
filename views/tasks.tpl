@@ -9,10 +9,13 @@
   .description { padding-left:8px }
 </style>
 
+
+
 <div class="w3-row">
   <div class="w3-col s6 w3-container w3-topbar w3-bottombar w3-leftbar w3-rightbar w3-border-white">
     <div class="w3-row w3-xxlarge w3-bottombar w3-border-black w3-margin-bottom">
       <h1><i>Today</i></h1>
+      <h2 id = "curr_date"> </h2>
     </div>
     <table id="task-list-today" class="w3-table">
     </table>
@@ -21,6 +24,7 @@
   <div class="w3-col s6 w3-container w3-topbar w3-bottombar w3-leftbar w3-rightbar w3-border-white">
     <div class="w3-row w3-xxlarge w3-bottombar w3-border-black w3-margin-bottom">
       <h1><i>Tomorrow</i></h1>
+      <h2 id = "next_date"></h2>
     </div>
     <table  id="task-list-tomorrow" class="w3-table">
     </table>
@@ -28,6 +32,19 @@
   </div>
 </div>
 <input id="current_input" hidden value=""/> 
+
+<script>
+
+  const full = new Date();
+  const tdy_day_num = full.getDate();
+  const curr_month_num = full.getMonth();
+  document.getElementById("curr_date").innerHTML = (curr_month_num + 1) + "/" + tdy_day_num;
+
+  const tmr_day_num = full.getDate() + 1;
+  document.getElementById("next_date").innerHTML = (curr_month_num + 1) + "/" + tmr_day_num;
+</script>
+
+
 <script>
 
 /* API CALLS */
