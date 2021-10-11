@@ -16,6 +16,7 @@ from bottle import run
 
 from bottle import default_app  #change made 9/29/2021, separate line b/c I don't know where it's supposed to go
 
+
 # ---------------------------
 # web application routes
 # ---------------------------
@@ -40,6 +41,7 @@ def login():
 import json
 import dataset
 import time
+from datetime import date
 
 taskbook_db = dataset.connect('sqlite:///taskbook.db')  
 
@@ -68,6 +70,7 @@ def create_task():
     try:
         task_table = taskbook_db.get_table('task')
         task_table.insert({
+            "date": str(date.today()),
             "time": time.time(),
             "description":data['description'].strip(),
             "list":data['list'],
@@ -75,6 +78,7 @@ def create_task():
         })
     except Exception as e:
         response.status="409 Bad Request:"+str(e)
+        print(response.status)
     # return 200 Success
     response.headers['Content-Type'] = 'application/json'
     return json.dumps({'status':200, 'success': True})

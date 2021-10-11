@@ -7,6 +7,13 @@
   }
   .completed {text-decoration: line-through;}
   .description { padding-left:8px }
+  .date { 
+    color: rgb(135, 135, 135); 
+    padding-right: 20px; 
+    margin-left: -150px; 
+    vertical-align: top !important; 
+    cursor: pointer
+  }
 </style>
 
 
@@ -216,6 +223,7 @@ function display_task(x) {
         '      </span>' + 
         '  </td>' +
         '  <td>' +
+        '    <span id="description-'+x.id+'" class="date' + completed + '">' + x.date + '</span>' + 
         '    <span id="edit_task-'+x.id+'" class="edit_task '+x.list+' material-icons">edit</span>' +
         '    <span id="delete_task-'+x.id+'" class="delete_task material-icons">delete</span>' +
         '    <span id="save_edit-'+x.id+'" hidden class="save_edit material-icons">done</span>' + 
