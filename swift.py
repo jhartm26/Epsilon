@@ -59,18 +59,19 @@ def create_task():
     'create a new task in the database'
     try:
         data = request.json
+        print(data)
         for key in data.keys():
-            assert key in ["description","list"], f"Illegal key '{key}'"
+            assert key in ["description","list","date"], f"Illegal key '{key}'"
         assert type(data['description']) is str, "Description is not a string."
         assert len(data['description'].strip()) > 0, "Description is length zero."
-        assert data['list'] in ["today","tomorrow"], "List must be 'today' or 'tomorrow'"
     except Exception as e:
         response.status="400 Bad Request:"+str(e)
+        print(response.status)
         return
     try:
         task_table = taskbook_db.get_table('task')
         task_table.insert({
-            "date": str(date.today()),
+            "date": data['date'].strip(),
             "time": time.time(),
             "description":data['description'].strip(),
             "list":data['list'],
@@ -89,7 +90,7 @@ def update_task():
     try:
         data = request.json
         for key in data.keys():
-            assert key in ["id","description","completed","list"], f"Illegal key '{key}'"
+            assert key in ["id","description","completed","list","date"], f"Illegal key '{key}'"
         assert type(data['id']) is int, f"id '{id}' is not int"
         if "description" in request:
             assert type(data['description']) is str, "Description is not a string."
@@ -100,6 +101,7 @@ def update_task():
             assert data['list'] in ["today","tomorrow"], "List must be 'today' or 'tomorrow'"
     except Exception as e:
         response.status="400 Bad Request:"+str(e)
+        print(response.status)
         return
     if 'list' in data: 
         data['time'] = time.time()
@@ -108,6 +110,7 @@ def update_task():
         task_table.update(row=data, keys=['id'])
     except Exception as e:
         response.status="409 Bad Request:"+str(e)
+        print(response.status)
         return
     # return 200 Success
     response.headers['Content-Type'] = 'application/json'
