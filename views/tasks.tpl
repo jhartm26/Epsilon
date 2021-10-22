@@ -55,6 +55,7 @@
     justify-content: center;
     align-items: center;
     min-height: 500px !important;
+    width: 100%;
   }
   .tasks_table {
     min-height: 500px !important;
@@ -500,10 +501,6 @@
   </td>
 </div>
 <div id="task_book_buttons">
-  <div id="delete_all_tasks">
-    <p>Delete All Tasks</p>
-  </div>
-</div>
 <div id="task_lists"></div>
 <input id="current_input" hidden value=""/> 
 
@@ -801,19 +798,7 @@ function dated_task_lists(day, nextDay) {
       ' </div> ' +
       ' <span class="material-icons advance_date" style="align-self:center; cursor:pointer;">arrow_forward</span>' +
       '</div>' +
-      '<span id="date-tracker" hidden>'+day+'</span>' +  
-      '<div class="task_table_display"> ' +
-      ' <div id="other-task-table">' +
-      '  <div class="w3-col s6 w3-container w3-topbar w3-bottombar w3-leftbar w3-rightbar w3-border-white tasks_table">' +
-      '    <div class="w3-row w3-xxlarge w3-bottombar w3-border-black w3-margin-bottom">' +
-      '      <h2 id = "next_date"> Other tasks </h2>' +
-      '    </div>' +
-      '    <table  id="task-list-others" class="w3-table">' +
-      '    </table>' +
-      '  </div>' +
-      '  <div class="w3-row w3-bottombar w3-border-black w3-margin-bottom w3-margin-top" style="width: 98%"></div>' +
-      ' </div> ' +
-      '</div>';
+      '<span id="date-tracker" hidden>'+day+'</span>';
   $("#task_lists").append(t);
   $("#current_input").val("");
 }
