@@ -61,7 +61,7 @@ def create_task():
         data = request.json
         print(data)
         for key in data.keys():
-            assert key in ["description","list","date"], f"Illegal key '{key}'"
+            assert key in ["description","list","date","literal_date"], f"Illegal key '{key}'"
         assert type(data['description']) is str, "Description is not a string."
         assert len(data['description'].strip()) > 0, "Description is length zero."
     except Exception as e:
@@ -69,9 +69,17 @@ def create_task():
         print(response.status)
         return
     try:
+        theDate = data['date'].strip()
+        if (theDate == ''):
+            theDate = date.today()
+        literalDate = data['literal_date']
+        print(literalDate)
+        if (literalDate == None):
+            literalDate = date.today()
         task_table = taskbook_db.get_table('task')
         task_table.insert({
-            "date": data['date'].strip(),
+            "literal_date": literalDate,
+            "date": theDate,
             "time": time.time(),
             "description":data['description'].strip(),
             "list":data['list'],
@@ -90,7 +98,7 @@ def update_task():
     try:
         data = request.json
         for key in data.keys():
-            assert key in ["id","description","completed","list","date"], f"Illegal key '{key}'"
+            assert key in ["id","description","completed","list","date","literal_date"], f"Illegal key '{key}'"
         assert type(data['id']) is int, f"id '{id}' is not int"
         if "description" in request:
             assert type(data['description']) is str, "Description is not a string."
