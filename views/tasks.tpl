@@ -16,10 +16,7 @@
   }
   .task-creation-container {
     margin: auto;
-    margin-top: 25px;
-    padding-bottom: 25px;
-    border-top: 6px solid black;
-    border-bottom: 6px solid black;
+    margin-top: 10px;
     width: 70%;
   }
   .task-list {
@@ -42,7 +39,8 @@
     align-items: center;
   }
   #find_date {
-    margin-top: 25px;
+    margin-top: 10px;
+    margin-bottom: 10px;
     display: flex;
     flex-direction: row;
     justify-content: center;
@@ -475,17 +473,17 @@
   <div class="task-creation">
     <tr id="task" class="task">
       <td style="width:36px"></td>
-      <td><span id="editor-task">
+      <td><span id="editor-task" class="w3-bottombar w3-topbar w3-leftbar w3-rightbar w3-border-gray">
             <input id="input-task" style="height:22px; width:50vw;" class="w3-input"
               type="text" autofocus placeholder="Add an item..." required/>
-            <input id="input-task-date" style="height:25px; margin-top:10px; width:50vw;" class="w3-input"
+            <input id="input-task-date" style="height:25px; width:50vw;" class="w3-input w3-topbar w3-border-gray"
               type="date" autofocus required>
           </span>
       </td>
       <td style="width:72px">
-        <span id="filler-task" class="material-icons">more_horiz</span>
-        <span id="save_edit-task" hidden class="save_edit material-icons">done</span>
-        <span id="undo_edit-task" hidden class="undo_edit material-icons">cancel</span>
+        <span id="filler-task" class="material-icons w3-bottombar w3-topbar w3-rightbar w3-border-gray">more_horiz</span>
+        <span id="save_edit-task" hidden class="save_edit material-icons w3-bottombar w3-topbar w3-border-gray">done</span>
+        <span id="undo_edit-task" hidden class="undo_edit material-icons w3-bottombar w3-topbar w3-rightbar w3-border-gray">cancel</span>
       </td>
     </tr>
   </div>
@@ -773,28 +771,28 @@ function dated_task_lists(day, nextDay) {
 
   next_date_id = formattedDate(nextDay);
 
-  t = '<div class="w3-row" style="display:flex; flex-direction:row; width: 100%">' +
+  t = '<div class="w3-row w3-bottombar w3-topbar w3-leftbar w3-rightbar w3-border-gray w3-blue-gray" style="display:flex; flex-direction:row; width: 100%">' +
       ' <span class="material-icons previous_date" style="align-self:center; cursor:pointer;">arrow_back</span>' +
       ' <div class="task_table_display"> ' +
-      ' <div class="w3-col s6 w3-container w3-topbar w3-bottombar w3-leftbar w3-rightbar w3-border-white tasks_table">' +
-      '   <div class="w3-row w3-xxlarge w3-bottombar w3-border-black w3-margin-bottom">' +
+      ' <div class="w3-col s6 w3-container w3-leftbar w3-rightbar w3-border-gray tasks_table">' +
+      '   <div class="w3-row w3-xxlarge w3-bottombar w3-border-light-gray w3-margin-bottom">' +
       '     <h2 id = "curr_date">'+curr_date+'</h2>' +
       '   </div>' +
       '   <table id="task-list-'+curr_date_id+'" class="w3-table task-list">' +
       '   </table>' +
       ' </div>' +
-      ' <div class="w3-row w3-bottombar w3-border-black w3-margin-bottom w3-margin-top" style="width: 95%"></div>' +
+      ' <div class="w3-row w3-bottombar w3-border-light-gray w3-margin-bottom w3-margin-top" style="width: 95%"></div>' +
       ' </div> ' +
       ' <div id="calendar"></div>' +
       ' <div class="task_table_display"> ' +
-      ' <div class="w3-col s6 w3-container w3-topbar w3-bottombar w3-leftbar w3-rightbar w3-border-white tasks_table">' +
-      '   <div class="w3-row w3-xxlarge w3-bottombar w3-border-black w3-margin-bottom">' +
+      ' <div class="w3-col s6 w3-container  w3-leftbar w3-rightbar w3-border-gray tasks_table">' +
+      '   <div class="w3-row w3-xxlarge w3-bottombar w3-border-light-gray w3-margin-bottom">' +
       '     <h2 id = "next_date">'+next_date+'</h2>' +
       '   </div>' +
       '   <table  id="task-list-'+next_date_id+'" class="w3-table">' +
       '   </table>' +
       ' </div>' +
-      ' <div class="w3-row w3-bottombar w3-border-black w3-margin-bottom w3-margin-top" style="width: 95%"></div>' +
+      ' <div class="w3-row w3-bottombar w3-border-light-gray w3-margin-bottom w3-margin-top" style="width: 95%"></div>' +
       ' </div> ' +
       ' <span class="material-icons advance_date" style="align-self:center; cursor:pointer;">arrow_forward</span>' +
       '</div>' +
