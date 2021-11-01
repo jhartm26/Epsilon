@@ -63,11 +63,11 @@
     width: 100% !important;
   }
   .task_table_display {
-    display: flex !important;
+    display: flex;
     flex-direction: column;
-    justify-content: space-between !important;
-    width: 50% !important;
-    align-items: center !important;
+    justify-content: space-between;
+    width: 50%;
+    align-items: center;
   }
   #task_book_buttons {
     display: flex;
@@ -100,9 +100,8 @@
     -webkit-transform: translate3d(0, 0, 0);
     -moz-transform: translate3d(0, 0, 0);
     transform: translate3d(0, 0, 0);
-    width: 590px;
+    width: 30%;
     margin: 0 auto;
-    margin-top: 25px;
     padding-bottom: -45px;
     height: 585px;
     overflow: hidden;
@@ -113,7 +112,7 @@
 
   .header {
     height: 50px;
-    width: 420px;
+    width: 100%;
     background: rgba(66, 66, 66, 1);
     text-align: center;
     position: relative;
@@ -197,7 +196,7 @@
 
   .day {
     display: inline-block;
-    width: 60px;
+    width: 14.2857142857%;
     padding: 10px;
     text-align: center;
     vertical-align: top;
@@ -467,6 +466,22 @@
   @keyframes fadeOutShink  {
     to { opacity: 0; padding: 0px; height: 0px; }
   }
+
+  @media (max-width: 1024px){
+    #calendar {
+      width: 85%;
+      align-self: flex-start;
+    }
+
+    .task_list_single {
+      flex-direction: column !important;
+      align-items: center;
+    }
+
+    .task_table_display {
+      width: 85%;
+    }
+  }
 </style>
 
 <div class="task-creation-container">
@@ -498,7 +513,6 @@
     <span id="undo_edit-date-find" hidden class="undo_edit material-icons">cancel</span>
   </td>
 </div>
-<div id="task_book_buttons">
 <div id="task_lists"></div>
 <input id="current_input" hidden value=""/> 
 
@@ -771,7 +785,7 @@ function dated_task_lists(day, nextDay) {
 
   next_date_id = formattedDate(nextDay);
 
-  t = '<div class="w3-row w3-bottombar w3-topbar w3-leftbar w3-rightbar w3-border-gray w3-blue-gray" style="display:flex; flex-direction:row; width: 100%">' +
+  t = '<div class="task_list_single w3-row w3-bottombar w3-topbar w3-leftbar w3-rightbar w3-border-gray w3-blue-gray" style="display:flex; flex-direction:row; width: 100%">' +
       ' <span class="material-icons previous_date" style="align-self:center; cursor:pointer;">arrow_back</span>' +
       ' <div class="task_table_display"> ' +
       ' <div class="w3-col s6 w3-container w3-leftbar w3-rightbar w3-border-gray tasks_table">' +
@@ -796,6 +810,18 @@ function dated_task_lists(day, nextDay) {
       ' </div> ' +
       ' <span class="material-icons advance_date" style="align-self:center; cursor:pointer;">arrow_forward</span>' +
       '</div>' +
+      '<div class="w3-row w3-bottombar w3-topbar w3-leftbar w3-rightbar w3-border-gray w3-blue-gray" style="display:flex; flex-direction:row; width: 100%; justify-content: center;">' +
+      '<div class="task_table_display"> ' +
+      '<div class="w3-col s6 w3-container  w3-leftbar w3-rightbar w3-border-gray tasks_table">' +
+      '  <div class="w3-row w3-xxlarge w3-bottombar w3-border-light-gray w3-margin-bottom">' +
+      '    <h2 id = "next_date">Other tasks</h2>' +
+      '  </div>' +
+      '  <table  id="task-list-other" class="w3-table">' +
+      '  </table>' +
+      '</div>' +
+      '<div class="w3-row w3-bottombar w3-border-light-gray w3-margin-bottom w3-margin-top" style="width: 95%"></div>' +
+      '</div> ' +
+      '</div> ' +
       '<span id="date-tracker" hidden>'+day+'</span>';
   $("#task_lists").append(t);
   $("#current_input").val("");
