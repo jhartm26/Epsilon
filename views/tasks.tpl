@@ -810,6 +810,11 @@ function dated_task_lists(day, nextDay) {
       ' </div> ' +
       ' <span class="material-icons advance_date" style="align-self:center; cursor:pointer;">arrow_forward</span>' +
       '</div>' +
+<<<<<<< HEAD
+=======
+      '<div class="w3-row w3-bottombar w3-topbar w3-leftbar w3-rightbar w3-border-gray w3-blue-gray" style="display:flex; flex-direction:row; width: 100%; justify-content: center;">' +
+      '</div> ' +
+>>>>>>> 985bbccdb0d396b5242a6e04b1e14d487f77cdac
       '<span id="date-tracker" hidden>'+day+'</span>';
   $("#task_lists").append(t);
   $("#current_input").val("");
