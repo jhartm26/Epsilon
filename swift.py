@@ -10,10 +10,6 @@ from bottle import route, get, put, post, delete
 # web page template processor
 from bottle import template
 
-# development server
-from bottle import run 
-
-
 from bottle import default_app  #change made 9/29/2021, separate line b/c I don't know where it's supposed to go
 
 
@@ -145,6 +141,3 @@ def delete_task():
 
  #change one 9/29/2021
 application = default_app()
-if __name__ == "__main__":
-
-    run(host='0.0.0.0', port=8080, debug=True)
