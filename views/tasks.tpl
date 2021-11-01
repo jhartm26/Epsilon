@@ -811,16 +811,6 @@ function dated_task_lists(day, nextDay) {
       ' <span class="material-icons advance_date" style="align-self:center; cursor:pointer;">arrow_forward</span>' +
       '</div>' +
       '<div class="w3-row w3-bottombar w3-topbar w3-leftbar w3-rightbar w3-border-gray w3-blue-gray" style="display:flex; flex-direction:row; width: 100%; justify-content: center;">' +
-      '<div class="task_table_display"> ' +
-      '<div class="w3-col s6 w3-container  w3-leftbar w3-rightbar w3-border-gray tasks_table">' +
-      '  <div class="w3-row w3-xxlarge w3-bottombar w3-border-light-gray w3-margin-bottom">' +
-      '    <h2 id = "next_date">Other tasks</h2>' +
-      '  </div>' +
-      '  <table  id="task-list-other" class="w3-table">' +
-      '  </table>' +
-      '</div>' +
-      '<div class="w3-row w3-bottombar w3-border-light-gray w3-margin-bottom w3-margin-top" style="width: 95%"></div>' +
-      '</div> ' +
       '</div> ' +
       '<span id="date-tracker" hidden>'+day+'</span>';
   $("#task_lists").append(t);
