@@ -1,4 +1,4 @@
-#Had to use internet, past example code, code in swift.py, etc. for some help
+#Had to use internet, past example code, code in swift.py, teammate screensharing their code, etc. for some help
 
 
 from selenium import webdriver
