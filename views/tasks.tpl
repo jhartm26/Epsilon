@@ -513,6 +513,9 @@
     <span id="undo_edit-date-find" hidden class="undo_edit material-icons">cancel</span>
   </td>
 </div>
+<div id="task_book_buttons">
+  <p id="delete_all_tasks">Delete All Tasks</p>
+</div>
 <div id="task_lists"></div>
 <input id="current_input" hidden value=""/> 
 
@@ -788,14 +791,14 @@ function dated_task_lists(day, nextDay) {
   t = '<div class="task_list_single w3-row w3-bottombar w3-topbar w3-leftbar w3-rightbar w3-border-gray w3-blue-gray" style="display:flex; flex-direction:row; width: 100%">' +
       ' <span class="material-icons previous_date" style="align-self:center; cursor:pointer;">arrow_back</span>' +
       ' <div class="task_table_display"> ' +
-      ' <div class="w3-col s6 w3-container w3-leftbar w3-rightbar w3-border-gray tasks_table">' +
-      '   <div class="w3-row w3-xxlarge w3-bottombar w3-border-light-gray w3-margin-bottom">' +
-      '     <h2 id = "curr_date">'+curr_date+'</h2>' +
+      '   <div class="w3-col s6 w3-container w3-leftbar w3-rightbar w3-border-gray tasks_table">' +
+      '     <div class="w3-row w3-xxlarge w3-bottombar w3-border-light-gray w3-margin-bottom">' +
+      '       <h2 id = "curr_date">'+curr_date+'</h2>' +
+      '     </div>' +
+      '     <table id="task-list-'+curr_date_id+'" class="w3-table task-list">' +
+      '     </table>' +
       '   </div>' +
-      '   <table id="task-list-'+curr_date_id+'" class="w3-table task-list">' +
-      '   </table>' +
-      ' </div>' +
-      ' <div class="w3-row w3-bottombar w3-border-light-gray w3-margin-bottom w3-margin-top" style="width: 95%"></div>' +
+      '   <div class="w3-row w3-bottombar w3-border-light-gray w3-margin-bottom w3-margin-top" style="width: 95%"></div>' +
       ' </div> ' +
       ' <div id="calendar"></div>' +
       ' <div class="task_table_display"> ' +
@@ -810,6 +813,16 @@ function dated_task_lists(day, nextDay) {
       ' </div> ' +
       ' <span class="material-icons advance_date" style="align-self:center; cursor:pointer;">arrow_forward</span>' +
       '</div>' +
+      '<div class="task_table_display task_list_single w3-row w3-bottombar w3-topbar w3-leftbar w3-rightbar w3-border-gray w3-blue-gray"> ' +
+      '  <div class="w3-col s6 w3-container w3-leftbar w3-rightbar w3-border-gray tasks_table">' +
+      '    <div class="w3-row w3-xxlarge w3-bottombar w3-border-light-gray w3-margin-bottom">' +
+      '      <h2 id="other">Other Tasks</h2>' +
+      '    </div>' +
+      '    <table id="task-list-others" class="w3-table task-list">' +
+      '    </table>' +
+      '  </div>' +
+      '  <div class="w3-row w3-bottombar w3-border-light-gray w3-margin-bottom w3-margin-top" style="width: 95%"></div>' +
+      '</div> ' +
       '<span id="date-tracker" hidden>'+day+'</span>';
   $("#task_lists").append(t);
   $("#current_input").val("");
