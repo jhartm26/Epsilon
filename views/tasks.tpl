@@ -426,7 +426,6 @@ function grouped_task_list(day) {
 
 
   t +='</div>'+
->>>>>>> master
       '<span id="date-tracker" hidden>'+day+'</span>';
   $("#task_lists").append(t);
   $("#current_input").val("");
