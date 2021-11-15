@@ -2,506 +2,39 @@
 % include("banner.tpl")
 
 <style>
-  .save_edit, .undo_edit, .move_task, .description, .edit_task, .delete_task {
-    cursor: pointer;
-  }
-  .completed {text-decoration: line-through;}
-  .description { padding-left:8px }
-  .task-creation {
-    margin-top: 25px;
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    width: 100%;
-  }
-  .task-creation-container {
-    margin: auto;
-    margin-top: 10px;
-    width: 70%;
-  }
-  .task-list {
-    width: 100% !important;
-  }
-  .task {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
-  }
-  .icons {
-    display: flex !important;
-    flex-direction: row;
-    margin-right: 10px;
-  }
-  .existing-editor {
-    display: none;
-    flex-direction: row;
-    align-items: center;
-  }
-  #find_date {
-    margin-top: 10px;
-    margin-bottom: 10px;
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    width: 100%;
-    align-items: center;
-  }
-  #task_lists {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    min-height: 500px !important;
-    width: 100%;
-  }
-  .tasks_table {
-    min-height: 500px !important;
-    display: flex !important;
-    flex-direction: column;
-    justify-content: flex-start;
-    width: 100% !important;
-  }
-  .task_table_display {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    width: 50%;
-    align-items: center;
-  }
-  #task_book_buttons {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    align-self: center;
-  }
-  #delete_all_tasks {
-    margin-top: 25px;
-    border: 3px solid black;
-    border-radius: 25px;
-    background-color: black;
-    color: white; 
-    width: 150px;
-    text-align: center;
-    cursor: pointer;
-  }
-  #other-task-table {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    align-items: center;
-  }
-
-  *, *:before, *:after {
-  -moz-box-sizing: border-box; -webkit-box-sizing: border-box; box-sizing: border-box;
-  }
-
-  #calendar {
-    -webkit-transform: translate3d(0, 0, 0);
-    -moz-transform: translate3d(0, 0, 0);
-    transform: translate3d(0, 0, 0);
-    width: 30%;
-    margin: 0 auto;
-    padding-bottom: -45px;
-    height: auto;
-    overflow: hidden;
-    border: 10px solid rgb(74,74,74);
-    border-radius: 25px;
-    background-color: rgb(74,74,74);
-  }
-
-  .header {
-    height: 50px;
-    width: 100%;
-    background: rgba(66, 66, 66, 1);
-    text-align: center;
-    position: relative;
-    z-index: 100;
-    color: white;
-  }
-
-  .header h1 {
-    margin: 0;
-    padding: 0;
-    font-size: 20px;
-    line-height: 50px;
-    font-weight: 100;
-    letter-spacing: 1px;
-  }
-
-  .left, .right {
-    position: absolute;
-    width: 0px;
-    height: 0px;
-    border-style: solid;
-    top: 50%;
-    margin-top: -7.5px;
-    cursor: pointer;
-  }
-
-  .left {
-    border-width: 7.5px 10px 7.5px 0;
-    border-color: transparent rgba(160, 159, 160, 1) transparent transparent;
-    left: 20px;
-  }
-
-  .right {
-    border-width: 7.5px 0 7.5px 10px;
-    border-color: transparent transparent transparent rgba(160, 159, 160, 1);
-    right: 20px;
-  }
-
-  .month {
-    /*overflow: hidden;*/
-    opacity: 0;
-    padding-bottom: 15px
-  }
-
-  .month.new {
-    -webkit-animation: fadeIn 1s ease-out;
-    opacity: 1;
-  }
-
-  .month.in.next {
-    -webkit-animation: moveFromTopFadeMonth .4s ease-out;
-    -moz-animation: moveFromTopFadeMonth .4s ease-out;
-    animation: moveFromTopFadeMonth .4s ease-out;
-    opacity: 1;
-  }
-
-  .month.out.next {
-    -webkit-animation: moveToTopFadeMonth .4s ease-in;
-    -moz-animation: moveToTopFadeMonth .4s ease-in;
-    animation: moveToTopFadeMonth .4s ease-in;
-    opacity: 1;
-  }
-
-  .month.in.prev {
-    -webkit-animation: moveFromBottomFadeMonth .4s ease-out;
-    -moz-animation: moveFromBottomFadeMonth .4s ease-out;
-    animation: moveFromBottomFadeMonth .4s ease-out;
-    opacity: 1;
-  }
-
-  .month.out.prev {
-    -webkit-animation: moveToBottomFadeMonth .4s ease-in;
-    -moz-animation: moveToBottomFadeMonth .4s ease-in;
-    animation: moveToBottomFadeMonth .4s ease-in;
-    opacity: 1;
-  }
-
-  .week {
-  background: #4A4A4A;
-  }
-
-  .day {
-    display: inline-block;
-    width: 14.2857142857%;
-    padding: 10px;
-    text-align: center;
-    vertical-align: top;
-    cursor: pointer;
-    background: #4A4A4A;
-    position: relative;
-    z-index: 100;
-  }
-
-  .day.other {
-  color: rgba(255, 255, 255, .3);
-  }
-
-  .day.today {
-    color: rgba(156, 202, 235, 1);
-  }
-
-  .day-name {
-    font-size: 9px;
-    text-transform: uppercase;
-    margin-bottom: 5px;
-    color: rgba(255, 255, 255, .5);
-    letter-spacing: .7px;
-  }
-
-  .day-number {
-    font-size: 24px;
-    letter-spacing: 1.5px;
-  }
-
-
-  .day .day-events {
-    list-style: none;
-    margin-top: 3px;
-    text-align: center;
-    height: 12px;
-    line-height: 6px;
-    overflow: hidden;
-  }
-
-  .day .day-events span {
-    vertical-align: top;
-    display: inline-block;
-    padding: 0;
-    margin: 0;
-    width: 5px;
-    height: 5px;
-    line-height: 5px;
-    margin: 0 1px;
-  }
-
-  .blue { background: rgba(156, 202, 235, 1); }
-  .orange { background: rgba(247, 167, 0, 1); }
-  .green { background: rgba(153, 198, 109, 1); }
-  .yellow { background: rgba(249, 233, 0, 1); }
-
-  .details {
-    position: relative;
-    width: 420px;
-    height: 75px;
-    background: rgba(164, 164, 164, 1);
-    margin-top: 5px;
-    border-radius: 4px;
-  }
-
-  .details.in {
-    -webkit-animation: moveFromTopFade .5s ease both;
-    -moz-animation: moveFromTopFade .5s ease both;
-    animation: moveFromTopFade .5s ease both;
-  }
-
-  .details.out {
-    -webkit-animation: moveToTopFade .5s ease both;
-    -moz-animation: moveToTopFade .5s ease both;
-    animation: moveToTopFade .5s ease both;
-  }
-
-  .arrow {
-    position: absolute;
-    top: -5px;
-    left: 50%;
-    margin-left: -2px;
-    width: 0px;
-    height: 0px;
-    border-style: solid;
-    border-width: 0 5px 5px 5px;
-    border-color: transparent transparent rgba(164, 164, 164, 1) transparent;
-    transition: all 0.7s ease;
-  }
-
-  .events {
-    height: 75px;
-    padding: 7px 0;
-    overflow-y: auto;
-    overflow-x: hidden;
-  }
-
-  .events.in {
-    -webkit-animation: fadeIn .3s ease both;
-    -moz-animation: fadeIn .3s ease both;
-    animation: fadeIn .3s ease both;
-  }
-
-  .events.in {
-    -webkit-animation-delay: .3s;
-    -moz-animation-delay: .3s;
-    animation-delay: .3s;
-  }
-
-  .details.out .events {
-    -webkit-animation: fadeOutShrink .4s ease both;
-    -moz-animation: fadeOutShink .4s ease both;
-    animation: fadeOutShink .4s ease both;
-  }
-
-  .events.out {
-    -webkit-animation: fadeOut .3s ease both;
-    -moz-animation: fadeOut .3s ease both;
-    animation: fadeOut .3s ease both;
-  }
-
-  .event {
-    font-size: 16px;
-    line-height: 22px;
-    letter-spacing: .5px;
-    padding: 2px 16px;
-    vertical-align: top;
-  }
-
-  .event.empty {
-    color: #eee;
-  }
-
-  .event-category {
-    height: 10px;
-    width: 10px;
-    display: inline-block;
-    margin: 6px 0 0;
-    vertical-align: top;
-  }
-
-  .event span {
-    display: inline-block;
-    padding: 0 0 0 7px;
-  }
-
-  .legend {
-    position: absolute;
-    bottom: 0;
-    width: 100%;
-    height: 30px;
-    background: rgba(60, 60, 60, 1);
-    line-height: 30px;
-
-  }
-
-  .entry {
-    position: relative;
-    padding: 0 0 0 25px;
-    font-size: 13px;
-    display: inline-block;
-    line-height: 30px;
-    background: transparent;
-  }
-
-  .entry:after {
-    position: absolute;
-    content: '';
-    height: 5px;
-    width: 5px;
-    top: 12px;
-    left: 14px;
-  }
-
-  .entry.blue:after { background: rgba(156, 202, 235, 1); }
-  .entry.orange:after { background: rgba(247, 167, 0, 1); }
-  .entry.green:after { background: rgba(153, 198, 109, 1); }
-  .entry.yellow:after { background: rgba(249, 233, 0, 1); }
-
-  /* Animations are cool!  */
-  @-webkit-keyframes moveFromTopFade {
-    from { opacity: .3; height:0px; margin-top:0px; -webkit-transform: translateY(-100%); }
-  }
-  @-moz-keyframes moveFromTopFade {
-    from { height:0px; margin-top:0px; -moz-transform: translateY(-100%); }
-  }
-  @keyframes moveFromTopFade {
-    from { height:0px; margin-top:0px; transform: translateY(-100%); }
-  }
-
-  @-webkit-keyframes moveToTopFade {
-    to { opacity: .3; height:0px; margin-top:0px; opacity: 0.3; -webkit-transform: translateY(-100%); }
-  }
-  @-moz-keyframes moveToTopFade {
-    to { height:0px; -moz-transform: translateY(-100%); }
-  }
-  @keyframes moveToTopFade {
-    to { height:0px; transform: translateY(-100%); }
-  }
-
-  @-webkit-keyframes moveToTopFadeMonth {
-    to { opacity: 0; -webkit-transform: translateY(-30%) scale(.95); }
-  }
-  @-moz-keyframes moveToTopFadeMonth {
-    to { opacity: 0; -moz-transform: translateY(-30%); }
-  }
-  @keyframes moveToTopFadeMonth {
-    to { opacity: 0; -moz-transform: translateY(-30%); }
-  }
-
-  @-webkit-keyframes moveFromTopFadeMonth {
-    from { opacity: 0; -webkit-transform: translateY(30%) scale(.95); }
-  }
-  @-moz-keyframes moveFromTopFadeMonth {
-    from { opacity: 0; -moz-transform: translateY(30%); }
-  }
-  @keyframes moveFromTopFadeMonth {
-    from { opacity: 0; -moz-transform: translateY(30%); }
-  }
-
-  @-webkit-keyframes moveToBottomFadeMonth {
-    to { opacity: 0; -webkit-transform: translateY(30%) scale(.95); }
-  }
-  @-moz-keyframes moveToBottomFadeMonth {
-    to { opacity: 0; -webkit-transform: translateY(30%); }
-  }
-  @keyframes moveToBottomFadeMonth {
-    to { opacity: 0; -webkit-transform: translateY(30%); }
-  }
-
-  @-webkit-keyframes moveFromBottomFadeMonth {
-    from { opacity: 0; -webkit-transform: translateY(-30%) scale(.95); }
-  }
-  @-moz-keyframes moveFromBottomFadeMonth {
-    from { opacity: 0; -webkit-transform: translateY(-30%); }
-  }
-  @keyframes moveFromBottomFadeMonth {
-    from { opacity: 0; -webkit-transform: translateY(-30%); }
-  }
-
-  @-webkit-keyframes fadeIn  {
-    from { opacity: 0; }
-  }
-  @-moz-keyframes fadeIn  {
-    from { opacity: 0; }
-  }
-  @keyframes fadeIn  {
-    from { opacity: 0; }
-  }
-
-  @-webkit-keyframes fadeOut  {
-    to { opacity: 0; }
-  }
-  @-moz-keyframes fadeOut  {
-    to { opacity: 0; }
-  }
-  @keyframes fadeOut  {
-    to { opacity: 0; }
-  }
-
-  @-webkit-keyframes fadeOutShink  {
-    to { opacity: 0; padding: 0px; height: 0px; }
-  }
-  @-moz-keyframes fadeOutShink  {
-    to { opacity: 0; padding: 0px; height: 0px; }
-  }
-  @keyframes fadeOutShink  {
-    to { opacity: 0; padding: 0px; height: 0px; }
-  }
-
-  @media (max-width: 1024px){
-    #calendar {
-      width: 85%;
-      align-self: flex-start;
-    }
-
-    .task_list_single {
-      flex-direction: column !important;
-      align-items: center;
-    }
-
-    .task_table_display {
-      width: 85%;
-    }
-  }
+% include("css/main.css")
 </style>
 
 <div class="task-creation-container">
-  <div class="task-creation">
-    <tr id="task" class="task">
-      <td style="width:36px"></td>
-      <td><span id="editor-task" class="w3-bottombar w3-topbar w3-leftbar w3-rightbar w3-border-gray">
-            <input id="input-task" style="height:22px; width:50vw;" class="w3-input"
-              type="text" autofocus placeholder="Add an item..." required/>
-            <input id="input-task-date" style="height:25px; width:50vw;" class="w3-input w3-topbar w3-border-gray"
-              type="date" autofocus required>
-          </span>
-      </td>
-      <td style="width:72px">
-        <span id="filler-task" class="material-icons w3-bottombar w3-topbar w3-rightbar w3-border-gray">more_horiz</span>
-        <span id="save_edit-task" hidden class="save_edit material-icons w3-bottombar w3-topbar w3-border-gray">done</span>
-        <span id="undo_edit-task" hidden class="undo_edit material-icons w3-bottombar w3-topbar w3-rightbar w3-border-gray">cancel</span>
-      </td>
-    </tr>
-  </div>
+  <form id="task-form">
+    <div class="task-creation">
+      <tr id="task" class="task">
+        <td style="width:36px"></td>
+        <td><span id="editor-task" class="w3-bottombar w3-topbar w3-leftbar w3-rightbar w3-border-gray">
+              <input id="input-task" style="height:22px; width:50vw;" class="w3-input"
+                type="text" autofocus placeholder="Add an item..." required/>
+              <input id="input-task-date" style="height:25px; width:50vw;" class="w3-input w3-topbar w3-border-gray"
+                type="date" autofocus required>
+              <input id="input-task-group" style="height:25px; width:50vw;" class="w3-input w3-topbar w3-border-gray"
+                list="groups" autofocus required/>
+              <datalist id="groups">
+                <option value="Homework">
+                <option value="Classes">
+                <option value="Extracurriculars">
+                <option value="Tests">
+              </datalist>
+              <input id="input-task-time" style="height:25px; width:50vw;" class="w3-input w3-topbar w3-border-gray"
+                type="time" autofocus required/>
+            </span>
+        </td>
+        <td style="width:72px">
+          <span id="filler-task" class="material-icons w3-bottombar w3-topbar w3-rightbar w3-border-gray">more_horiz</span>
+          <span id="save_edit-task" hidden class="save_edit material-icons w3-bottombar w3-topbar w3-border-gray">done</span>
+          <span id="undo_edit-task" hidden class="undo_edit material-icons w3-bottombar w3-topbar w3-rightbar w3-border-gray">cancel</span>
+        </td>
+      </tr>
+    </div>
+  </form>
 </div>
 <div id="find_date">
   <p>Enter a date to find: </p>
@@ -610,19 +143,39 @@ function edit_task(event) {
   $("#current_input").val(event.target.id)
 }
 
+function isValidDate(d) {
+  return d instanceof Date && !isNaN(d);
+}
+
 function save_edit(event) {
   console.log("save item", event.target.id)
   id = event.target.id.replace("save_edit-","");
   console.log("desc to save = ",$("#input-" + id).val())
+  if (!isValidDate(new Date($("#input-" + id + "-date").val()))){
+    alert("Invalid date!");
+    return;
+  }
+  if ($("#input-" + id).val() === ""){
+    alert("Task is required!");
+    return;
+  }
+  if ($("#input-" + id + "-group").val() === ""){
+    alert("Group is required!");
+    return;
+  }
+  if ($("#input-" + id + "-time").val() === ""){
+    alert("Time is required!");
+    return;
+  }
   if ((id != "today") & (id != "tomorrow") & (id != "task")) {
-    api_update_task({'id':id, description:$("#input-" + id).val(), date:$("#input-" + id + "-date").val(), literal_date: new Date($("#input-" + id + "-date").val())},
+    api_update_task({'id':id, description:$("#input-" + id).val(), date:$("#input-" + id + "-date").val(), literal_date: new Date($("#input-" + id + "-date").val()), group:$("#input-" + id + "-group").val(), time:$("#input-" + id + "-time").val()},
                     function(result) { 
                       console.log(result);
                       get_current_tasks(new Date($('#date-tracker').html()));
                       $("#current_input").val("")
                     } );
   } else {
-    api_create_task({description:$("#input-" + id).val(), list:id, date:$("#input-" + id + "-date").val(), literal_date: new Date($("#input-" + id + "-date").val())},
+    api_create_task({description:$("#input-" + id).val(), list:id, date:$("#input-" + id + "-date").val(), literal_date: new Date($("#input-" + id + "-date").val()), group:$("#input-" + id + "-group").val(), time:$("#input-" + id + "-time").val()},
                     function(result) { 
                       console.log(result);
                       get_current_tasks(new Date($('#date-tracker').html()));
@@ -712,7 +265,7 @@ function display_task(x) {
         '    <span id="undo_edit-'+x.id+'" hidden class="undo_edit material-icons">cancel</span>' +
         '  </td>' +
         '</tr>';
-    $("#task-list-" + x.date).append(t);
+    $("#task-list-" + x.group).append(t);
     $("#input-" + x.id + "-date").val(x.date); 
     $("#current_input").val("");
   }
@@ -735,7 +288,7 @@ function display_task(x) {
         '  </td>' +
         '</tr>';
 
-    $("#task-list-others").append(t);
+    $("#task-list-" + x.group).append(t);
     $("#input-" + x.id + "-date").val(x.date); 
     $("#current_input").val("");
   }
@@ -772,57 +325,108 @@ function formattedDate(date) {
   return date_string;
 }
 
-function dated_task_lists(day, nextDay) {
+var homeworkEnabled = true;
+var extracurricularsEnabled = false;
+var classesEnabled = true;
+var testsEnabled = false;
+
+function setHomeworkEnabled() {homeworkEnabled = !homeworkEnabled; manageAtLeastOneEnabled(); get_current_tasks(new Date($('#date-tracker').html())); }
+function setextracurricularsEnabled() {extracurricularsEnabled = !extracurricularsEnabled; manageAtLeastOneEnabled(); get_current_tasks(new Date($('#date-tracker').html())); }
+function setClassesEnabled() {classesEnabled = !classesEnabled; manageAtLeastOneEnabled(); get_current_tasks(new Date($('#date-tracker').html())); }
+function setTestsEnabled() {testsEnabled = !testsEnabled; manageAtLeastOneEnabled(); get_current_tasks(new Date($('#date-tracker').html())); }
+function manageAtLeastOneEnabled() {
+  if (!homeworkEnabled && !extracurricularsEnabled && !classesEnabled && !testsEnabled) {
+    homeworkEnabled = true;
+  }
+}
+
+function grouped_task_list(day) {
   $("#task_lists").empty();
-  curr_day_num = day.getDate();
-  curr_month_num = day.getMonth() + 1;
-  curr_year_num = day.getFullYear();
-  curr_date = curr_month_num + "/" + curr_day_num + "/" + curr_year_num;
 
-  curr_date_id = formattedDate(day);
+  var t = '<div class="task_list_single w3-row w3-bottombar w3-topbar w3-leftbar w3-rightbar w3-border-gray w3-blue-gray" style="display:flex; flex-direction:row; width: 100%">';
+  var buttons = "";
 
-  next_day_num = nextDay.getDate();
-  next_month_num = nextDay.getMonth() + 1;
-  next_year_num = nextDay.getFullYear();
-  next_date = next_month_num + "/" + next_day_num + "/" + next_year_num;
+  if (homeworkEnabled) {
+    t +=' <div class="task_table_display"> ' +
+        '   <div class="w3-col s6 w3-container w3-rightbar w3-border-gray tasks_table">' +
+        '     <div class="w3-row w3-xxlarge w3-bottombar w3-border-light-gray w3-margin-bottom">' +
+        '       <h2>Homework</h2>' +
+        '     </div>' +
+        '     <table id="task-list-Homework" class="w3-table task-list">' +
+        '     </table>' +
+        '   </div>' +
+        '   <div class="w3-row w3-bottombar w3-border-light-gray w3-margin-bottom w3-margin-top" style="width: 95%"></div>' +
+        ' </div> ';
+    buttons +='   <div id="group_selector_homework" class="group_button active">';
+  }
+  else {
+    buttons +='   <div id="group_selector_homework" class="group_button inactive">';
+  }
+  buttons +='     <p class="group_label">Homework</p>'+
+            '   </div>';
 
-  next_date_id = formattedDate(nextDay);
+  if (extracurricularsEnabled) {
+    t +=' <div class="task_table_display"> ' +
+        '   <div class="w3-col s6 w3-container w3-rightbar w3-border-gray tasks_table">' +
+        '     <div class="w3-row w3-xxlarge w3-bottombar w3-border-light-gray w3-margin-bottom">' +
+        '       <h2>Extracurriculars</h2>' +
+        '     </div>' +
+        '     <table id="task-list-Extracurriculars" class="w3-table task-list">' +
+        '     </table>' +
+        '   </div>' +
+        '   <div class="w3-row w3-bottombar w3-border-light-gray w3-margin-bottom w3-margin-top" style="width: 95%"></div>' +
+        ' </div> ';
+    buttons +='   <div id="group_selector_extra" class="group_button active">';
+  }
+  else {
+    buttons +='   <div id="group_selector_extra" class="group_button inactive">';
+  }
+  buttons +='     <p class="group_label">Extracurriculars</p>'+
+            '   </div>';
 
-  t = '<div class="task_list_single w3-row w3-bottombar w3-topbar w3-leftbar w3-rightbar w3-border-gray w3-blue-gray" style="display:flex; flex-direction:row; width: 100%">' +
-      ' <span class="material-icons previous_date" style="align-self:center; cursor:pointer;">arrow_back</span>' +
-      ' <div class="task_table_display w3-leftbar w3-rightbar w3-border-gray"> ' +
-      '   <div class="w3-col s6 w3-container  tasks_table">' +
-      '     <div class="w3-row w3-xxlarge w3-bottombar w3-border-light-gray w3-margin-bottom">' +
-      '       <h2 id = "curr_date">'+curr_date+'</h2>' +
-      '     </div>' +
-      '     <table id="task-list-'+curr_date_id+'" class="w3-table task-list">' +
-      '     </table>' +
-      '   </div>' +
-      '   <div class="w3-row w3-bottombar w3-border-light-gray w3-margin-bottom w3-margin-top" style="width: 95%"></div>' +
-      ' </div> ' +
-      ' <div id="calendar"></div>' +
-      ' <div class="task_table_display w3-leftbar w3-rightbar w3-border-gray"> ' +
-      ' <div class="w3-col s6 w3-container tasks_table">' +
-      '   <div class="w3-row w3-xxlarge w3-bottombar w3-border-light-gray w3-margin-bottom">' +
-      '     <h2 id = "next_date">'+next_date+'</h2>' +
-      '   </div>' +
-      '   <table  id="task-list-'+next_date_id+'" class="w3-table">' +
-      '   </table>' +
-      ' </div>' +
-      ' <div class="w3-row w3-bottombar w3-border-light-gray w3-margin-bottom w3-margin-top" style="width: 95%"></div>' +
-      ' </div> ' +
-      ' <span class="material-icons advance_date" style="align-self:center; cursor:pointer;">arrow_forward</span>' +
-      '</div>' +
-      '<div class="task_table_display task_list_single w3-row w3-bottombar w3-topbar w3-leftbar w3-rightbar w3-border-gray w3-blue-gray"> ' +
-      '  <div class="w3-col s6 w3-container tasks_table">' +
-      '    <div class="w3-row w3-xxlarge w3-bottombar w3-border-light-gray w3-margin-bottom">' +
-      '      <h2 id="other" style="text-align : center">Other Tasks</h2>' +
-      '    </div>' +
-      '    <table id="task-list-others" class="w3-table task-list">' +
-      '    </table>' +
-      '  </div>' +
-      '  <div class="w3-row w3-bottombar w3-border-light-gray w3-margin-bottom w3-margin-top" style="width: 95%"></div>' +
-      '</div> ' +
+  if (classesEnabled) {
+    t +=' <div class="task_table_display"> ' +
+        '   <div class="w3-col s6 w3-container w3-rightbar w3-border-gray tasks_table">' +
+        '     <div class="w3-row w3-xxlarge w3-bottombar w3-border-light-gray w3-margin-bottom">' +
+        '       <h2>Classes</h2>' +
+        '     </div>' +
+        '     <table id="task-list-Classes" class="w3-table task-list">' +
+        '     </table>' +
+        '   </div>' +
+        '   <div class="w3-row w3-bottombar w3-border-light-gray w3-margin-bottom w3-margin-top" style="width: 95%"></div>' +
+        ' </div> ';
+    buttons +='   <div id="group_selector_classes" class="group_button active">';
+  }
+  else {
+    buttons +='   <div id="group_selector_classes" class="group_button inactive">';
+  }
+  buttons +='     <p class="group_label">Classes</p>'+
+            '   </div>';
+
+  if (testsEnabled) {
+    t +=' <div class="task_table_display"> ' +
+        '   <div class="w3-col s6 w3-container w3-rightbar w3-border-gray tasks_table">' +
+        '     <div class="w3-row w3-xxlarge w3-bottombar w3-border-light-gray w3-margin-bottom">' +
+        '       <h2>Tests</h2>' +
+        '     </div>' +
+        '     <table id="task-list-Tests" class="w3-table task-list">' +
+        '     </table>' +
+        '   </div>' +
+        '   <div class="w3-row w3-bottombar w3-border-light-gray w3-margin-bottom w3-margin-top" style="width: 95%"></div>' +
+        ' </div> ';
+    buttons +='   <div id="group_selector_tests" class="group_button active">';
+  }
+  else {
+    buttons +='   <div id="group_selector_tests" class="group_button inactive">';
+  }
+  buttons +='     <p class="group_label">Tests</p>'+
+            '   </div>';
+
+  t +=' <div id="sidebar"><div id="group-selectors" class="w3-bottombar">' + buttons + '</div><div id="calendar"></div></div>';
+
+
+  t +='</div>'+
+>>>>>>> master
       '<span id="date-tracker" hidden>'+day+'</span>';
   $("#task_lists").append(t);
   $("#current_input").val("");
@@ -834,13 +438,14 @@ function get_current_tasks(curr_day = new Date()) {
   // display the tasks
   next_day = new Date(curr_day);
   next_day.setDate(next_day.getDate() + 1);
-  dated_task_lists(curr_day, next_day);
+  grouped_task_list(curr_day);
   api_get_tasks(function(result){
     for (const task of result.tasks) {
       display_task(task);
     }
     createCalendar();
     addEventsToCal(result.tasks);
+    count_events_per_group(result.tasks);
   // wire the response events 
   $(".move_task").off("click").bind("click", move_task);
   $(".description").off("click").bind("click", complete_task)
@@ -855,6 +460,12 @@ function get_current_tasks(curr_day = new Date()) {
   // set all inputs to set flag
   $("input").off("click").bind("change", input_keypress);
   $("input").off("click").bind("keydown", input_keypress);
+
+  // add group selector events
+  $("#group_selector_homework").off("click").bind("click", setHomeworkEnabled);
+  $("#group_selector_extra").off("click").bind("click", setextracurricularsEnabled);
+  $("#group_selector_classes").off("click").bind("click", setClassesEnabled);
+  $("#group_selector_tests").off("click").bind("click", setTestsEnabled);
   });
 }
 
@@ -871,17 +482,18 @@ function createCalendar() {
 
   var today = moment();
 
-  function Calendar(selector, events, date) {
+  function Calendar(selector, events) {
     this.el = document.querySelector(selector);
     this.events = events;
-    
-    this.events.forEach(function(ev) {
-      ev.date = new Date(ev.date);
-      ev.date.setDate(ev.date.getDate() + 1);
-    });
-
-    this.current = date;
+    this.current = moment().date(1);
     this.draw();
+    var current = document.querySelector('.today');
+    if(current) {
+      var self = this;
+      window.setTimeout(function() {
+        self.openDay(current);
+      }, 500);
+    }
   }
 
   Calendar.prototype.draw = function() {
@@ -890,6 +502,8 @@ function createCalendar() {
 
     //Draw Month
     this.drawMonth();
+
+    this.drawLegend();
   }
 
   Calendar.prototype.drawHeader = function() {
@@ -919,7 +533,6 @@ function createCalendar() {
 
   Calendar.prototype.drawMonth = function() {
     var self = this;
-    
     
     if(this.month) {
       this.oldMonth = this.month;
@@ -991,9 +604,8 @@ function createCalendar() {
 
     //Outer Day
     var outer = createElement('div', this.getDayClass(day));
-    outer.setAttribute('id', "calendar_day-"+(new Date(day)));
     outer.addEventListener('click', function() {
-      get_current_tasks(new Date(outer.id.replace("calendar_day-","")));
+      self.openDay(this);
     });
 
     //Day Name
@@ -1016,7 +628,9 @@ function createCalendar() {
   Calendar.prototype.drawEvents = function(day, element) {
     if(day.month() === this.current.month()) {
       var todaysEvents = this.events.reduce(function(memo, ev) {
-        if(sameDate(ev.date, new Date(day))) {
+        eventDate = new Date(ev.date);
+        eventDate.setDate(eventDate.getDate() + 1);
+        if(sameDate(eventDate, new Date(day))) {
           memo.push(ev);
         }
         return memo;
@@ -1031,16 +645,68 @@ function createCalendar() {
 
   Calendar.prototype.getDayClass = function(day) {
     classes = ['day'];
-    curr_day = new Date($('#date-tracker').html());
-    passed_day = new Date(day);
-    next_day = new Date(curr_day);
-    next_day.setDate(next_day.getDate() + 1);
     if(day.month() !== this.current.month()) {
       classes.push('other');
-    } else if (sameDate(curr_day, passed_day) || sameDate(next_day, passed_day)) {
+    } else if (today.isSame(day, 'day')) {
       classes.push('today');
     }
     return classes.join(' ');
+  }
+
+  Calendar.prototype.openDay = function(el) {
+    var details, arrow;
+    var dayNumber = +el.querySelectorAll('.day-number')[0].innerText || +el.querySelectorAll('.day-number')[0].textContent;
+    var day = this.current.clone().date(dayNumber);
+
+    var currentOpened = document.querySelector('.details');
+
+    //Check to see if there is an open detais box on the current row
+    if(currentOpened && currentOpened.parentNode === el.parentNode) {
+      details = currentOpened;
+      arrow = document.querySelector('.arrow');
+    } else {
+      //Close the open events on differnt week row
+      //currentOpened && currentOpened.parentNode.removeChild(currentOpened);
+      if(currentOpened) {
+        currentOpened.addEventListener('webkitAnimationEnd', function() {
+          currentOpened.parentNode.removeChild(currentOpened);
+        });
+        currentOpened.addEventListener('oanimationend', function() {
+          currentOpened.parentNode.removeChild(currentOpened);
+        });
+        currentOpened.addEventListener('msAnimationEnd', function() {
+          currentOpened.parentNode.removeChild(currentOpened);
+        });
+        currentOpened.addEventListener('animationend', function() {
+          currentOpened.parentNode.removeChild(currentOpened);
+        });
+        currentOpened.className = 'details out';
+      }
+
+      //Create the Details Container
+      details = createElement('div', 'details in');
+
+      //Create the arrow
+      var arrow = createElement('div', 'arrow');
+
+      //Create the event wrapper
+
+      details.appendChild(arrow);
+      el.parentNode.appendChild(details);
+    }
+
+    var todaysEvents = this.events.reduce(function(memo, ev) {
+      eventDate = new Date(ev.date);
+      eventDate.setDate(eventDate.getDate() + 1);
+      if(sameDate(eventDate, new Date(day))) {
+        memo.push(ev);
+      }
+      return memo;
+    }, []);
+
+    this.renderEvents(todaysEvents, details);
+
+    arrow.style.left = el.offsetLeft - el.parentNode.offsetLeft + 27 + 'px';
   }
 
   Calendar.prototype.renderEvents = function(events, ele) {
@@ -1050,11 +716,31 @@ function createCalendar() {
 
     events.forEach(function(ev) {
       var div = createElement('div', 'event');
+      var eventLeft = createElement('div', 'event-left')
       var square = createElement('div', 'event-category ' + ev.color);
       var span = createElement('span', '', ev.eventName);
 
-      div.appendChild(square);
-      div.appendChild(span);
+      var timeStr = ev.time + " am";
+      if (ev.time > "12:59"){
+        var hour = parseInt(ev.time.slice(0,2));
+        var minute = parseInt(ev.time.slice(3, 5));
+        if (minute < 10) {
+          minute = minute + "0";
+        }
+        hour -= 12;
+        timeStr = hour + ":" + minute + " pm";
+      }
+
+      var eventRight = createElement('div', 'event-right');
+      var time = createElement('span', 'light', timeStr);
+      var dueAt = createElement('span', 'light', 'Due at: ')
+
+      eventRight.appendChild(dueAt);
+      eventRight.appendChild(time);
+      eventLeft.appendChild(square);
+      eventLeft.appendChild(span);
+      div.appendChild(eventLeft);
+      div.appendChild(eventRight);
       wrapper.appendChild(div);
     });
 
@@ -1089,6 +775,23 @@ function createCalendar() {
     }
   }
 
+  Calendar.prototype.drawLegend = function() {
+    var legend = createElement('div', 'legend');
+    var calendars = this.events.map(function(e) {
+      return e.calendar + '|' + e.color;
+    }).reduce(function(memo, e) {
+      if(memo.indexOf(e) === -1) {
+        memo.push(e);
+      }
+      return memo;
+    }, []).forEach(function(e) {
+      var parts = e.split('|');
+      var entry = createElement('span', 'entry ' +  parts[1], parts[0]);
+      legend.appendChild(entry);
+    });
+    this.el.appendChild(legend);
+  }
+
   Calendar.prototype.nextMonth = function() {
     this.current.add('months', 1);
     this.next = true;
@@ -1120,11 +823,41 @@ function addEventsToCal(taskList) {
   for(const task of taskList) {
     eventName = task.description;
     date = task.literal_date;
-    data.push({eventName, calendar: 'Other', color: 'green', date});
+    var color;
+    if (task.group == "Homework") color = "green";
+    else if (task.group == "Extracurriculars") color = "white";
+    else if (task.group == "Classes") color = "blue";
+    else if (task.group == "Tests") color = "grey";
+    else color = "purple";
+    data.push({eventName, calendar: task.group, color, date, time:task.time});
   }
   date = moment(new Date($('#date-tracker').html())).startOf('month');
   var calendar = new Calendar('#calendar', data, date);
 };
+
+function count_events_per_group(taskList) {
+  var homeworkCount = 0;
+  var extraCount = 0;
+  var classesCount = 0;
+  var testsCount = 0;
+
+  for(const task of taskList) {
+    if (task.group == "Homework") homeworkCount++;
+    else if (task.group == "Extracurriculars") extraCount++;
+    else if (task.group == "Classes") classesCount++;
+    else if (task.group == "Tests") testsCount++;
+  }
+
+  h = '<span class="group_count">' + homeworkCount + '</span>';
+  e = '<span class="group_count">' + extraCount + '</span>';
+  c = '<span class="group_count">' + classesCount + '</span>';
+  t = '<span class="group_count">' + testsCount + '</span>';
+
+  $("#group_selector_homework").append(h);
+  $("#group_selector_extra").append(e);
+  $("#group_selector_classes").append(c);
+  $("#group_selector_tests").append(t);
+}
 
 $(document).ready(function() {
   get_current_tasks()
