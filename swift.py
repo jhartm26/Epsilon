@@ -62,7 +62,7 @@ def create_task():
         data = request.json
         print(data)
         for key in data.keys():
-            assert key in ["description","list","date","literal_date"], f"Illegal key '{key}'"
+            assert key in ["description","list","date","literal_date","group","time"], f"Illegal key '{key}'"
         assert type(data['description']) is str, "Description is not a string."
         assert len(data['description'].strip()) > 0, "Description is length zero."
     except Exception as e:
@@ -81,10 +81,11 @@ def create_task():
         task_table.insert({
             "literal_date": literalDate,
             "date": theDate,
-            "time": time.time(),
             "description":data['description'].strip(),
             "list":data['list'],
-            "completed":False
+            "completed":False,
+            "group":data['group'].strip(),
+            "time":data['time']
         })
     except Exception as e:
         response.status="409 Bad Request:"+str(e)
@@ -99,7 +100,7 @@ def update_task():
     try:
         data = request.json
         for key in data.keys():
-            assert key in ["id","description","completed","list","date","literal_date"], f"Illegal key '{key}'"
+            assert key in ["id","description","completed","list","date","literal_date","time"], f"Illegal key '{key}'"
         assert type(data['id']) is int, f"id '{id}' is not int"
         if "description" in request:
             assert type(data['description']) is str, "Description is not a string."
