@@ -81,7 +81,7 @@
     border: 3px solid black;
     border-radius: 25px;
     background-color: black;
-    color: white; 
+    color: white;
     width: 150px;
     text-align: center;
     cursor: pointer;
@@ -135,6 +135,14 @@
     display: flex;
     flex-direction: column;
     min-width: 30%;
+}
+
+.white {
+    background: white;
+}
+
+.grey {
+    background: #3541f0 !important;
 }
 
 *, *:before, *:after {
