@@ -50,7 +50,7 @@
   <p id="delete_all_tasks">Delete All Tasks</p>
 </div>
 <div id="task_lists"></div>
-<input id="current_input" hidden value=""/> 
+<input id="current_input" hidden value=""/>
 
 
 <script>
@@ -58,14 +58,14 @@
 /* API CALLS */
 
 function api_get_tasks(success_function) {
-  $.ajax({url:"api/tasks", type:"GET", 
+  $.ajax({url:"api/tasks", type:"GET",
           success:success_function});
 }
 
 function api_create_task(task, success_function) {
   console.log("creating task with:", task)
-  $.ajax({url:"api/tasks", type:"POST", 
-          data:JSON.stringify(task), 
+  $.ajax({url:"api/tasks", type:"POST",
+          data:JSON.stringify(task),
           contentType:"application/json; charset=utf-8",
           success:success_function});
 }
@@ -73,8 +73,8 @@ function api_create_task(task, success_function) {
 function api_update_task(task, success_function) {
   console.log("updating task with:", task)
   task.id = parseInt(task.id)
-  $.ajax({url:"api/tasks", type:"PUT", 
-          data:JSON.stringify(task), 
+  $.ajax({url:"api/tasks", type:"PUT",
+          data:JSON.stringify(task),
           contentType:"application/json; charset=utf-8",
           success:success_function});
 }
@@ -82,8 +82,8 @@ function api_update_task(task, success_function) {
 function api_delete_task(task, success_function) {
   console.log("deleting task with:", task)
   task.id = parseInt(task.id)
-  $.ajax({url:"api/tasks", type:"DELETE", 
-          data:JSON.stringify(task), 
+  $.ajax({url:"api/tasks", type:"DELETE",
+          data:JSON.stringify(task),
           contentType:"application/json; charset=utf-8",
           success:success_function});
 }
@@ -107,7 +107,7 @@ function move_task(event) {
   id = event.target.id.replace("move_task-","");
   target_list = event.target.className.search("today") > 0 ? "tomorrow" : "today";
   api_update_task({'id':id, 'list':target_list},
-                  function(result) { 
+                  function(result) {
                     console.log(result);
                     get_current_tasks(new Date($('#date-tracker').html()));
                   } );
@@ -118,8 +118,8 @@ function complete_task(event) {
   id = event.target.id.replace("description-","");
   completed = event.target.className.search("completed") > 0;
   console.log("updating :",{'id':id, 'completed':completed==false})
-  api_update_task({'id':id, 'completed':completed==false}, 
-                  function(result) { 
+  api_update_task({'id':id, 'completed':completed==false},
+                  function(result) {
                     console.log(result);
                     get_current_tasks(new Date($('#date-tracker').html()));
                   } );
@@ -169,14 +169,14 @@ function save_edit(event) {
   }
   if ((id != "today") & (id != "tomorrow") & (id != "task")) {
     api_update_task({'id':id, description:$("#input-" + id).val(), date:$("#input-" + id + "-date").val(), literal_date: new Date($("#input-" + id + "-date").val()), group:$("#input-" + id + "-group").val(), time:$("#input-" + id + "-time").val()},
-                    function(result) { 
+                    function(result) {
                       console.log(result);
                       get_current_tasks(new Date($('#date-tracker').html()));
                       $("#current_input").val("")
                     } );
   } else {
     api_create_task({description:$("#input-" + id).val(), list:id, date:$("#input-" + id + "-date").val(), literal_date: new Date($("#input-" + id + "-date").val()), group:$("#input-" + id + "-group").val(), time:$("#input-" + id + "-time").val()},
-                    function(result) { 
+                    function(result) {
                       console.log(result);
                       get_current_tasks(new Date($('#date-tracker').html()));
                       $("#current_input").val("")
@@ -209,7 +209,7 @@ function undo_edit(event) {
     $("#edit_task-"+id).prop('hidden', false);
     $("#delete_task-"+id).prop('hidden', false);
   }
-  
+
   // set the editing flag
   $("#current_input").val("")
 }
@@ -218,7 +218,7 @@ function delete_task(event) {
   console.log("delete item", event.target.id )
   id = event.target.id.replace("delete_task-","");
   api_delete_task({'id':id},
-                  function(result) { 
+                  function(result) {
                     console.log(result);
                     get_current_tasks(new Date($('#date-tracker').html()));
                   } );
@@ -227,9 +227,9 @@ function delete_task(event) {
 function delete_all_tasks() {
   if (confirm("Are you sure you want to delete all tasks in your taskbook?")) {
     api_get_tasks(function(result){
-      for (const task of result.tasks) {  
+      for (const task of result.tasks) {
         api_delete_task({'id':task.id},
-                          function(result) { 
+                          function(result) {
                             console.log(result);
                           });
       }
@@ -250,46 +250,46 @@ function display_task(x) {
   next_day.setDate(next_day.getDate() + 1);
   next_day = formattedDate(next_day);
   if (x.date == curr_day || x.date == next_day) {
-    t = '<tr id="task-'+x.id+'" class="task">' + 
-        '  <td><span id="description-'+x.id+'" class="description' + completed + '">' + x.description + '</span>' + 
-        '      <span id="editor-'+x.id+'" class="existing-editor" hidden>' + 
+    t = '<tr id="task-'+x.id+'" class="task">' +
+        '  <td><span id="description-'+x.id+'" class="description' + completed + '">' + x.description + '</span>' +
+        '      <span id="editor-'+x.id+'" class="existing-editor" hidden>' +
         '        <input id="input-'+x.id+'" style="height:22px" class="w3-input" type="text" autofocus required/>' +
         '        <input id="input-'+x.id+'-date" style="height:22px; margin-left:10px" class="w3-input"' +
         '         type="date" autofocus required> ' +
-        '      </span>' + 
+        '      </span>' +
         '  </td>' +
         '  <td class="icons">' +
         '    <span id="edit_task-'+x.id+'" class="edit_task '+x.list+' material-icons">edit</span>' +
         '    <span id="delete_task-'+x.id+'" class="delete_task material-icons">delete</span>' +
-        '    <span id="save_edit-'+x.id+'" hidden class="save_edit material-icons">done</span>' + 
+        '    <span id="save_edit-'+x.id+'" hidden class="save_edit material-icons">done</span>' +
         '    <span id="undo_edit-'+x.id+'" hidden class="undo_edit material-icons">cancel</span>' +
         '  </td>' +
         '</tr>';
     $("#task-list-" + x.group).append(t);
-    $("#input-" + x.id + "-date").val(x.date); 
+    $("#input-" + x.id + "-date").val(x.date);
     $("#current_input").val("");
   }
 
   else {
-    t = '<tr id="task-'+x.id+'" class="task">' + 
-        '  <td><span id="description-'+x.id+'" class="description' + completed + '">' + x.description + '</span>' + 
-        '      <span id="editor-'+x.id+'" class="existing-editor" hidden>' + 
+    t = '<tr id="task-'+x.id+'" class="task">' +
+        '  <td><span id="description-'+x.id+'" class="description' + completed + '">' + x.description + '</span>' +
+        '      <span id="editor-'+x.id+'" class="existing-editor" hidden>' +
         '        <input id="input-'+x.id+'" style="height:22px" class="w3-input" type="text" autofocus required/>' +
         '        <input id="input-'+x.id+'-date" style="height:22px; margin-left:10px" class="w3-input"' +
         '         type="date" autofocus required> ' +
-        '      </span>' + 
+        '      </span>' +
         '  </td>' +
         '  <td class="icons" style="display:flex; flex-direction: row; align-items: center;">' +
         '    <p style="margin-right: 10px; color: rgb(177, 177, 177);" class="description' + completed + '">Due: '+x.date+'</p>' +
         '    <span id="edit_task-'+x.id+'" class="edit_task '+x.list+' material-icons">edit</span>' +
         '    <span id="delete_task-'+x.id+'" class="delete_task material-icons">delete</span>' +
-        '    <span id="save_edit-'+x.id+'" hidden class="save_edit material-icons">done</span>' + 
+        '    <span id="save_edit-'+x.id+'" hidden class="save_edit material-icons">done</span>' +
         '    <span id="undo_edit-'+x.id+'" hidden class="undo_edit material-icons">cancel</span>' +
         '  </td>' +
         '</tr>';
 
     $("#task-list-" + x.group).append(t);
-    $("#input-" + x.id + "-date").val(x.date); 
+    $("#input-" + x.id + "-date").val(x.date);
     $("#current_input").val("");
   }
 }
@@ -445,7 +445,7 @@ function get_current_tasks(curr_day = new Date()) {
     createCalendar();
     addEventsToCal(result.tasks);
     count_events_per_group(result.tasks);
-  // wire the response events 
+  // wire the response events
   $(".move_task").off("click").bind("click", move_task);
   $(".description").off("click").bind("click", complete_task)
   $(".edit_task").off("click").bind("click", edit_task);
@@ -521,7 +521,7 @@ function createCalendar() {
       left.addEventListener('click', function() { self.prevMonth(); });
 
       //Append the Elements
-      this.header.appendChild(this.title); 
+      this.header.appendChild(this.title);
       this.header.appendChild(right);
       this.header.appendChild(left);
       this.el.appendChild(this.header);
@@ -532,7 +532,7 @@ function createCalendar() {
 
   Calendar.prototype.drawMonth = function() {
     var self = this;
-    
+
     if(this.month) {
       this.oldMonth = this.month;
       this.oldMonth.className = 'month out ' + (self.next ? 'next' : 'prev');
