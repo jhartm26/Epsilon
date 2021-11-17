@@ -86,14 +86,15 @@ function edit_task(event) {
     $("#current_input").val(event.target.id)
 }
 
-function isValidDate(d) {
-    return d instanceof Date && !isNaN(d);
-}
-
 function save_edit(event) {
-    console.log("save item", event.target.id)
+    function isValidDate(d) {
+        return d instanceof Date && !isNaN(d);
+    }
+
+    console.log("save item", event.target.id);
     id = event.target.id.replace("save_edit-","");
-    console.log("desc to save = ",$("#input-" + id).val())
+    console.log("desc to save = ",$("#input-" + id).val());
+
     if (!isValidDate(new Date($("#input-" + id + "-date").val()))){
         alert("Invalid date!");
         return;
@@ -110,6 +111,7 @@ function save_edit(event) {
         alert("Time is required!");
         return;
     }
+
     if ((id != "today") & (id != "tomorrow") & (id != "task")) {
     api_update_task({'id':id, 
                     description:$("#input-" + id).val(), 
@@ -141,25 +143,25 @@ function undo_edit(event) {
     console.log("undo",[id])
     $("#input-" + id).val("");
     if ((id != "today") & (id != "tomorrow") & (id != "task")) {
-    // hide the editor
-    $("#editor-"+id).css('display', 'none');
-    $("#save_edit-"+id).prop('hidden', true);
-    $("#undo_edit-"+id).prop('hidden', true);
-    // show the text display
-    $("#move_task-"+id).prop('hidden', false);
-    $("#description-"+id).prop('hidden', false);
-    $("#filler-"+id).prop('hidden', false);
-    $("#edit_task-"+id).prop('hidden', false);
-    $("#delete_task-"+id).prop('hidden', false);
+        // hide the editor
+        $("#editor-"+id).css('display', 'none');
+        $("#save_edit-"+id).prop('hidden', true);
+        $("#undo_edit-"+id).prop('hidden', true);
+        // show the text display
+        $("#move_task-"+id).prop('hidden', false);
+        $("#description-"+id).prop('hidden', false);
+        $("#filler-"+id).prop('hidden', false);
+        $("#edit_task-"+id).prop('hidden', false);
+        $("#delete_task-"+id).prop('hidden', false);
     }
     else {
-    $("#save_edit-"+id).prop('hidden', true);
-    $("#undo_edit-"+id).prop('hidden', true);
-    $("#move_task-"+id).prop('hidden', false);
-    $("#description-"+id).prop('hidden', false);
-    $("#filler-"+id).prop('hidden', false);
-    $("#edit_task-"+id).prop('hidden', false);
-    $("#delete_task-"+id).prop('hidden', false);
+        $("#save_edit-"+id).prop('hidden', true);
+        $("#undo_edit-"+id).prop('hidden', true);
+        $("#move_task-"+id).prop('hidden', false);
+        $("#description-"+id).prop('hidden', false);
+        $("#filler-"+id).prop('hidden', false);
+        $("#edit_task-"+id).prop('hidden', false);
+        $("#delete_task-"+id).prop('hidden', false);
     }
     
     // set the editing flag
@@ -193,6 +195,7 @@ function delete_all_tasks() {
     }
 }
 
+// Creates and displays each task in the table
 function display_task(x) {
     completed = x.completed ? " completed" : "";
 
@@ -202,70 +205,51 @@ function display_task(x) {
     next_day.setDate(next_day.getDate() + 1);
     next_day = formattedDate(next_day);
     if (x.date == curr_day || x.date == next_day) {
-    t = '<tr id="task-'+x.id+'" class="task">' + 
-        '  <td><span id="description-'+x.id+'" class="description' + completed + '">' + x.description + '</span>' + 
-        '      <span id="editor-'+x.id+'" class="existing-editor" hidden>' + 
-        '        <input id="input-'+x.id+'" style="height:22px" class="w3-input" type="text" autofocus required/>' +
-        '        <input id="input-'+x.id+'-date" style="height:22px; margin-left:10px" class="w3-input"' +
-        '         type="date" autofocus required> ' +
-        '      </span>' + 
-        '  </td>' +
-        '  <td class="icons">' +
-        '    <span id="edit_task-'+x.id+'" class="edit_task '+x.list+' material-icons">edit</span>' +
-        '    <span id="delete_task-'+x.id+'" class="delete_task material-icons">delete</span>' +
-        '    <span id="save_edit-'+x.id+'" hidden class="save_edit material-icons">done</span>' + 
-        '    <span id="undo_edit-'+x.id+'" hidden class="undo_edit material-icons">cancel</span>' +
-        '  </td>' +
-        '</tr>';
-    $("#task-list-" + x.group).append(t);
-    $("#input-" + x.id + "-date").val(x.date); 
-    $("#current_input").val("");
+        t = '<tr id="task-'+x.id+'" class="task">' + 
+            '  <td><span id="description-'+x.id+'" class="description' + completed + '">' + x.description + '</span>' + 
+            '      <span id="editor-'+x.id+'" class="existing-editor" hidden>' + 
+            '        <input id="input-'+x.id+'" style="height:22px" class="w3-input" type="text" autofocus required/>' +
+            '        <input id="input-'+x.id+'-date" style="height:22px; margin-left:10px" class="w3-input"' +
+            '         type="date" autofocus required> ' +
+            '      </span>' + 
+            '  </td>' +
+            '  <td class="icons">' +
+            '    <span id="edit_task-'+x.id+'" class="edit_task '+x.list+' material-icons">edit</span>' +
+            '    <span id="delete_task-'+x.id+'" class="delete_task material-icons">delete</span>' +
+            '    <span id="save_edit-'+x.id+'" hidden class="save_edit material-icons">done</span>' + 
+            '    <span id="undo_edit-'+x.id+'" hidden class="undo_edit material-icons">cancel</span>' +
+            '  </td>' +
+            '</tr>';
+        $("#task-list-" + x.group).append(t);
+        $("#input-" + x.id + "-date").val(x.date); 
+        $("#current_input").val("");
     }
 
     else {
-    t = '<tr id="task-'+x.id+'" class="task">' + 
-        '  <td><span id="description-'+x.id+'" class="description' + completed + '">' + x.description + '</span>' + 
-        '      <span id="editor-'+x.id+'" class="existing-editor" hidden>' + 
-        '        <input id="input-'+x.id+'" style="height:22px" class="w3-input" type="text" autofocus required/>' +
-        '        <input id="input-'+x.id+'-date" style="height:22px; margin-left:10px" class="w3-input"' +
-        '         type="date" autofocus required> ' +
-        '      </span>' + 
-        '  </td>' +
-        '  <td class="icons" style="display:flex; flex-direction: row; align-items: center;">' +
-        '    <p style="margin-right: 10px; color: rgb(177, 177, 177);" class="description' + completed + '">Due: '+x.date+'</p>' +
-        '    <span id="edit_task-'+x.id+'" class="edit_task '+x.list+' material-icons">edit</span>' +
-        '    <span id="delete_task-'+x.id+'" class="delete_task material-icons">delete</span>' +
-        '    <span id="save_edit-'+x.id+'" hidden class="save_edit material-icons">done</span>' + 
-        '    <span id="undo_edit-'+x.id+'" hidden class="undo_edit material-icons">cancel</span>' +
-        '  </td>' +
-        '</tr>';
+        t = '<tr id="task-'+x.id+'" class="task">' + 
+            '  <td><span id="description-'+x.id+'" class="description' + completed + '">' + x.description + '</span>' + 
+            '      <span id="editor-'+x.id+'" class="existing-editor" hidden>' + 
+            '        <input id="input-'+x.id+'" style="height:22px" class="w3-input" type="text" autofocus required/>' +
+            '        <input id="input-'+x.id+'-date" style="height:22px; margin-left:10px" class="w3-input"' +
+            '         type="date" autofocus required> ' +
+            '      </span>' + 
+            '  </td>' +
+            '  <td class="icons" style="display:flex; flex-direction: row; align-items: center;">' +
+            '    <p style="margin-right: 10px; color: rgb(177, 177, 177);" class="description' + completed + '">Due: '+x.date+'</p>' +
+            '    <span id="edit_task-'+x.id+'" class="edit_task '+x.list+' material-icons">edit</span>' +
+            '    <span id="delete_task-'+x.id+'" class="delete_task material-icons">delete</span>' +
+            '    <span id="save_edit-'+x.id+'" hidden class="save_edit material-icons">done</span>' + 
+            '    <span id="undo_edit-'+x.id+'" hidden class="undo_edit material-icons">cancel</span>' +
+            '  </td>' +
+            '</tr>';
 
-    $("#task-list-" + x.group).append(t);
-    $("#input-" + x.id + "-date").val(x.date); 
-    $("#current_input").val("");
+        $("#task-list-" + x.group).append(t);
+        $("#input-" + x.id + "-date").val(x.date); 
+        $("#current_input").val("");
     }
 }
 
-function increment_date() {
-    curr_date = $('#date-tracker').html();
-    next_date = new Date(curr_date);
-    next_date.setDate(next_date.getDate() + 1);
-    get_current_tasks(next_date);
-}
-
-function decrement_date() {
-    curr_date = $('#date-tracker').html();
-    next_date = new Date(curr_date);
-    next_date.setDate(next_date.getDate() - 1);
-    get_current_tasks(next_date);
-}
-
-function find_date() {
-    date_to_find = new Date($("#input-date-find").val());
-    date_to_find.setDate(date_to_find.getDate() + 1);
-    get_current_tasks(date_to_find);
-}
-
+// Properly formats dates for comparison functions
 function formattedDate(date) {
     date_day_num = date.getDate();
     date_month_num = date.getMonth() + 1;
@@ -277,6 +261,7 @@ function formattedDate(date) {
     return date_string;
 }
 
+// Manages which groups are enabled
 var homeworkEnabled = true;
 var extracurricularsEnabled = false;
 var classesEnabled = true;
@@ -291,7 +276,9 @@ function manageAtLeastOneEnabled() {
     homeworkEnabled = true;
     }
 }
+///////////////////////////////
 
+// Creates the task list and layout
 function grouped_task_list(day) {
     $("#task_lists").empty();
 
@@ -383,55 +370,18 @@ function grouped_task_list(day) {
     $("#current_input").val("");
 }
 
-function get_current_tasks(curr_day = new Date()) {
-    // remove the old tasks
-    $(".task").remove();
-    // display the tasks
-    next_day = new Date(curr_day);
-    next_day.setDate(next_day.getDate() + 1);
-    grouped_task_list(curr_day);
-    api_get_tasks(function(result){
-    for (const task of result.tasks) {
-        display_task(task);
-    }
-    createCalendar();
-    addEventsToCal(result.tasks);
-    count_events_per_group(result.tasks);
-    // wire the response events 
-    $(".move_task").off("click").bind("click", move_task);
-    $(".description").off("click").bind("click", complete_task)
-    $(".edit_task").off("click").bind("click", edit_task);
-    $(".save_edit").off("click").bind("click", save_edit);
-    $(".undo_edit").off("click").bind("click", undo_edit);
-    $(".delete_task").off("click").bind("click", delete_task);
-    $(".advance_date").off("click").bind("click", increment_date);
-    $(".previous_date").off("click").bind("click", decrement_date);
-    $(".find_date").off("click").bind("click", find_date);
-    $("#delete_all_tasks").off("click").bind("click", delete_all_tasks);
-    // set all inputs to set flag
-    $("input").off("click").bind("change", input_keypress);
-    $("input").off("click").bind("keydown", input_keypress);
-
-    // add group selector events
-    $("#group_selector_homework").off("click").bind("click", setHomeworkEnabled);
-    $("#group_selector_extra").off("click").bind("click", setextracurricularsEnabled);
-    $("#group_selector_classes").off("click").bind("click", setClassesEnabled);
-    $("#group_selector_tests").off("click").bind("click", setTestsEnabled);
-    });
-}
-
-function sameDate(d1, d2) {
-    return d1.getFullYear() === d2.getFullYear() &&
-            d1.getMonth() === d2.getMonth() &&
-            d1.getDate() === d2.getDate();
-}
-
 // CALENDAR SCRIPTS
 // Credit to https://www.sliderrevolution.com/resources/html-calendar/ for source code
 // Modified to fit necessary functionality
 function createCalendar() {
 
     var today = moment();
+
+    function sameDate(d1, d2) {
+        return  d1.getFullYear() === d2.getFullYear() &&
+                d1.getMonth() === d2.getMonth() &&
+                d1.getDate() === d2.getDate();
+    }
 
     function Calendar(selector, events) {
     this.el = document.querySelector(selector);
@@ -810,6 +760,46 @@ function count_events_per_group(taskList) {
     $("#group_selector_tests").append(t);
 }
 
+// Entry point for entire page
+// Reloads page each time it is called
+function get_current_tasks(curr_day = new Date()) {
+    // remove the old tasks
+    $(".task").remove();
+    // display the tasks
+    next_day = new Date(curr_day);
+    next_day.setDate(next_day.getDate() + 1);
+    grouped_task_list(curr_day);
+    api_get_tasks(function(result){
+    for (const task of result.tasks) {
+        display_task(task);
+    }
+    createCalendar();
+    addEventsToCal(result.tasks);
+    count_events_per_group(result.tasks);
+    // wire the response events 
+    $(".move_task").off("click").bind("click", move_task);
+    $(".description").off("click").bind("click", complete_task)
+    $(".edit_task").off("click").bind("click", edit_task);
+    $(".save_edit").off("click").bind("click", save_edit);
+    $(".undo_edit").off("click").bind("click", undo_edit);
+    $(".delete_task").off("click").bind("click", delete_task);
+    $(".advance_date").off("click").bind("click", increment_date);
+    $(".previous_date").off("click").bind("click", decrement_date);
+    $(".find_date").off("click").bind("click", find_date);
+    $("#delete_all_tasks").off("click").bind("click", delete_all_tasks);
+    // set all inputs to set flag
+    $("input").off("click").bind("change", input_keypress);
+    $("input").off("click").bind("keydown", input_keypress);
+
+    // add group selector events
+    $("#group_selector_homework").off("click").bind("click", setHomeworkEnabled);
+    $("#group_selector_extra").off("click").bind("click", setextracurricularsEnabled);
+    $("#group_selector_classes").off("click").bind("click", setClassesEnabled);
+    $("#group_selector_tests").off("click").bind("click", setTestsEnabled);
+    });
+}
+
+// Run Entry function on page load
 $(document).ready(function() {
     get_current_tasks()
 });
