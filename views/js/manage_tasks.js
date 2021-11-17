@@ -180,18 +180,18 @@ function delete_task(event) {
 
 function delete_all_tasks() {
     if (confirm("Are you sure you want to delete all tasks in your taskbook?")) {
-    api_get_tasks(function(result){
-        for (const task of result.tasks) {  
-        api_delete_task({'id':task.id},
-                            function(result) { 
-                            console.log(result);
-                            });
-        }
-        get_current_tasks(new Date($('#date-tracker').html()));
-    });
+        api_get_tasks(function(result){
+            for (const task of result.tasks) {  
+            api_delete_task({'id':task.id},
+                                function(result) { 
+                                console.log(result);
+                                });
+            }
+            get_current_tasks(new Date($('#date-tracker').html()));
+        });
     }
     else {
-    get_current_tasks(new Date($('#date-tracker').html()));
+        return;
     }
 }
 
@@ -370,396 +370,6 @@ function grouped_task_list(day) {
     $("#current_input").val("");
 }
 
-// CALENDAR SCRIPTS
-// Credit to https://www.sliderrevolution.com/resources/html-calendar/ for source code
-// Modified to fit necessary functionality
-function createCalendar() {
-
-    var today = moment();
-
-    function sameDate(d1, d2) {
-        return  d1.getFullYear() === d2.getFullYear() &&
-                d1.getMonth() === d2.getMonth() &&
-                d1.getDate() === d2.getDate();
-    }
-
-    function Calendar(selector, events) {
-    this.el = document.querySelector(selector);
-    this.events = events;
-    this.current = moment().date(1);
-    this.draw();
-    var current = document.querySelector('.today');
-    if(current) {
-        var self = this;
-        window.setTimeout(function() {
-        self.openDay(current);
-        }, 500);
-    }
-    }
-
-    Calendar.prototype.draw = function() {
-    //Create Header
-    this.drawHeader();
-
-    //Draw Month
-    this.drawMonth();
-
-    this.drawLegend();
-    }
-
-    Calendar.prototype.drawHeader = function() {
-    var self = this;
-    if(!this.header) {
-        //Create the header elements
-        this.header = createElement('div', 'header');
-        this.header.className = 'header';
-
-        this.title = createElement('h1');
-
-        var right = createElement('div', 'right');
-        right.addEventListener('click', function() { self.nextMonth(); });
-
-        var left = createElement('div', 'left');
-        left.addEventListener('click', function() { self.prevMonth(); });
-
-        //Append the Elements
-        this.header.appendChild(this.title); 
-        this.header.appendChild(right);
-        this.header.appendChild(left);
-        this.el.appendChild(this.header);
-    }
-
-    this.title.innerHTML = this.current.format('MMMM YYYY');
-    }
-
-    Calendar.prototype.drawMonth = function() {
-    var self = this;
-    
-    if(this.month) {
-        this.oldMonth = this.month;
-        this.oldMonth.className = 'month out ' + (self.next ? 'next' : 'prev');
-        this.oldMonth.addEventListener('webkitAnimationEnd', function() {
-        self.oldMonth.parentNode.removeChild(self.oldMonth);
-        self.month = createElement('div', 'month');
-        self.backFill();
-        self.currentMonth();
-        self.fowardFill();
-        self.el.appendChild(self.month);
-        window.setTimeout(function() {
-            self.month.className = 'month in ' + (self.next ? 'next' : 'prev');
-        }, 16);
-        });
-    } else {
-        this.month = createElement('div', 'month');
-        this.el.appendChild(this.month);
-        this.backFill();
-        this.currentMonth();
-        this.fowardFill();
-        this.month.className = 'month new';
-    }
-    }
-
-    Calendar.prototype.backFill = function() {
-    var clone = this.current.clone();
-    var dayOfWeek = clone.day();
-
-    if(!dayOfWeek) { return; }
-
-    clone.subtract('days', dayOfWeek+1);
-
-    for(var i = dayOfWeek; i > 0 ; i--) {
-        this.drawDay(clone.add('days', 1));
-    }
-    }
-
-    Calendar.prototype.fowardFill = function() {
-    var clone = this.current.clone().add('months', 1).subtract('days', 1);
-    var dayOfWeek = clone.day();
-
-    if(dayOfWeek === 6) { return; }
-
-    for(var i = dayOfWeek; i < 6 ; i++) {
-        this.drawDay(clone.add('days', 1));
-    }
-    }
-
-    Calendar.prototype.currentMonth = function() {
-    var clone = this.current.clone();
-
-    while(clone.month() === this.current.month()) {
-        this.drawDay(clone);
-        clone.add('days', 1);
-    }
-    }
-
-    Calendar.prototype.getWeek = function(day) {
-    if(!this.week || day.day() === 0) {
-        this.week = createElement('div', 'week');
-        this.month.appendChild(this.week);
-    }
-    }
-
-    Calendar.prototype.drawDay = function(day) {
-    var self = this;
-    this.getWeek(day);
-
-    //Outer Day
-    var outer = createElement('div', this.getDayClass(day));
-    outer.addEventListener('click', function() {
-        self.openDay(this);
-    });
-
-    //Day Name
-    var name = createElement('div', 'day-name', day.format('ddd'));
-
-    //Day Number
-    var number = createElement('div', 'day-number', day.format('DD'));
-
-
-    //Events
-    var events = createElement('div', 'day-events');
-    this.drawEvents(day, events);
-
-    outer.appendChild(name);
-    outer.appendChild(number);
-    outer.appendChild(events);
-    this.week.appendChild(outer);
-    }
-
-    Calendar.prototype.drawEvents = function(day, element) {
-    if(day.month() === this.current.month()) {
-        var todaysEvents = this.events.reduce(function(memo, ev) {
-        eventDate = new Date(ev.date);
-        eventDate.setDate(eventDate.getDate() + 1);
-        if(sameDate(eventDate, new Date(day))) {
-            memo.push(ev);
-        }
-        return memo;
-        }, []);
-
-        todaysEvents.forEach(function(ev) {
-        var evSpan = createElement('span', ev.color);
-        element.appendChild(evSpan);
-        });
-    }
-    }
-
-    Calendar.prototype.getDayClass = function(day) {
-    classes = ['day'];
-    if(day.month() !== this.current.month()) {
-        classes.push('other');
-    } else if (today.isSame(day, 'day')) {
-        classes.push('today');
-    }
-    return classes.join(' ');
-    }
-
-    Calendar.prototype.openDay = function(el) {
-    var details, arrow;
-    var dayNumber = +el.querySelectorAll('.day-number')[0].innerText || +el.querySelectorAll('.day-number')[0].textContent;
-    var day = this.current.clone().date(dayNumber);
-
-    var currentOpened = document.querySelector('.details');
-
-    //Check to see if there is an open detais box on the current row
-    if(currentOpened && currentOpened.parentNode === el.parentNode) {
-        details = currentOpened;
-        arrow = document.querySelector('.arrow');
-    } else {
-        //Close the open events on differnt week row
-        //currentOpened && currentOpened.parentNode.removeChild(currentOpened);
-        if(currentOpened) {
-        currentOpened.addEventListener('webkitAnimationEnd', function() {
-            currentOpened.parentNode.removeChild(currentOpened);
-        });
-        currentOpened.addEventListener('oanimationend', function() {
-            currentOpened.parentNode.removeChild(currentOpened);
-        });
-        currentOpened.addEventListener('msAnimationEnd', function() {
-            currentOpened.parentNode.removeChild(currentOpened);
-        });
-        currentOpened.addEventListener('animationend', function() {
-            currentOpened.parentNode.removeChild(currentOpened);
-        });
-        currentOpened.className = 'details out';
-        }
-
-        //Create the Details Container
-        details = createElement('div', 'details in');
-
-        //Create the arrow
-        var arrow = createElement('div', 'arrow');
-
-        //Create the event wrapper
-
-        details.appendChild(arrow);
-        el.parentNode.appendChild(details);
-    }
-
-    var todaysEvents = this.events.reduce(function(memo, ev) {
-        eventDate = new Date(ev.date);
-        eventDate.setDate(eventDate.getDate() + 1);
-        if(sameDate(eventDate, new Date(day))) {
-        memo.push(ev);
-        }
-        return memo;
-    }, []);
-
-    this.renderEvents(todaysEvents, details);
-
-    arrow.style.left = el.offsetLeft - el.parentNode.offsetLeft + 27 + 'px';
-    }
-
-    Calendar.prototype.renderEvents = function(events, ele) {
-    //Remove any events in the current details element
-    var currentWrapper = ele.querySelector('.events');
-    var wrapper = createElement('div', 'events in' + (currentWrapper ? ' new' : ''));
-
-    events.forEach(function(ev) {
-        var div = createElement('div', 'event');
-        var eventLeft = createElement('div', 'event-left')
-        var square = createElement('div', 'event-category ' + ev.color);
-        var span = createElement('span', '', ev.eventName);
-
-        var timeStr = ev.time + " am";
-        if (ev.time > "12:59"){
-        var hour = parseInt(ev.time.slice(0,2));
-        var minute = parseInt(ev.time.slice(3, 5));
-        if (minute < 10) {
-            minute = minute + "0";
-        }
-        hour -= 12;
-        timeStr = hour + ":" + minute + " pm";
-        }
-
-        var eventRight = createElement('div', 'event-right');
-        var time = createElement('span', 'light', timeStr);
-        var dueAt = createElement('span', 'light', 'Due at: ')
-
-        eventRight.appendChild(dueAt);
-        eventRight.appendChild(time);
-        eventLeft.appendChild(square);
-        eventLeft.appendChild(span);
-        div.appendChild(eventLeft);
-        div.appendChild(eventRight);
-        wrapper.appendChild(div);
-    });
-
-    if(!events.length) {
-        var div = createElement('div', 'event empty');
-        var span = createElement('span', '', 'No Events');
-
-        div.appendChild(span);
-        wrapper.appendChild(div);
-    }
-
-    if(currentWrapper) {
-        currentWrapper.className = 'events out';
-        currentWrapper.addEventListener('webkitAnimationEnd', function() {
-        currentWrapper.parentNode.removeChild(currentWrapper);
-        ele.appendChild(wrapper);
-        });
-        currentWrapper.addEventListener('oanimationend', function() {
-        currentWrapper.parentNode.removeChild(currentWrapper);
-        ele.appendChild(wrapper);
-        });
-        currentWrapper.addEventListener('msAnimationEnd', function() {
-        currentWrapper.parentNode.removeChild(currentWrapper);
-        ele.appendChild(wrapper);
-        });
-        currentWrapper.addEventListener('animationend', function() {
-        currentWrapper.parentNode.removeChild(currentWrapper);
-        ele.appendChild(wrapper);
-        });
-    } else {
-        ele.appendChild(wrapper);
-    }
-    }
-
-    Calendar.prototype.drawLegend = function() {
-    var legend = createElement('div', 'legend');
-    var calendars = this.events.map(function(e) {
-        return e.calendar + '|' + e.color;
-    }).reduce(function(memo, e) {
-        if(memo.indexOf(e) === -1) {
-        memo.push(e);
-        }
-        return memo;
-    }, []).forEach(function(e) {
-        var parts = e.split('|');
-        var entry = createElement('span', 'entry ' +  parts[1], parts[0]);
-        legend.appendChild(entry);
-    });
-    this.el.appendChild(legend);
-    }
-
-    Calendar.prototype.nextMonth = function() {
-    this.current.add('months', 1);
-    this.next = true;
-    this.draw();
-    }
-
-    Calendar.prototype.prevMonth = function() {
-    this.current.subtract('months', 1);
-    this.next = false;
-    this.draw();
-    }
-
-    window.Calendar = Calendar;
-
-    function createElement(tagName, className, innerText) {
-    var ele = document.createElement(tagName);
-    if(className) {
-        ele.className = className;
-    }
-    if(innerText) {
-        ele.innderText = ele.textContent = innerText;
-    }
-    return ele;
-    }
-};
-
-function addEventsToCal(taskList) {
-    var data = [];
-    for(const task of taskList) {
-    eventName = task.description;
-    date = task.literal_date;
-    var color;
-    if (task.group == "Homework") color = "green";
-    else if (task.group == "Extracurriculars") color = "yellow";
-    else if (task.group == "Classes") color = "blue";
-    else if (task.group == "Tests") color = "orange";
-    else color = "purple";
-    data.push({eventName, calendar: task.group, color, date, time:task.time});
-    }
-    date = moment(new Date($('#date-tracker').html())).startOf('month');
-    var calendar = new Calendar('#calendar', data, date);
-};
-
-function count_events_per_group(taskList) {
-    var homeworkCount = 0;
-    var extraCount = 0;
-    var classesCount = 0;
-    var testsCount = 0;
-
-    for(const task of taskList) {
-    if (task.group == "Homework") homeworkCount++;
-    else if (task.group == "Extracurriculars") extraCount++;
-    else if (task.group == "Classes") classesCount++;
-    else if (task.group == "Tests") testsCount++;
-    }
-
-    h = '<span class="group_count">' + homeworkCount + '</span>';
-    e = '<span class="group_count">' + extraCount + '</span>';
-    c = '<span class="group_count">' + classesCount + '</span>';
-    t = '<span class="group_count">' + testsCount + '</span>';
-
-    $("#group_selector_homework").append(h);
-    $("#group_selector_extra").append(e);
-    $("#group_selector_classes").append(c);
-    $("#group_selector_tests").append(t);
-}
-
 // Entry point for entire page
 // Reloads page each time it is called
 function get_current_tasks(curr_day = new Date()) {
@@ -770,36 +380,85 @@ function get_current_tasks(curr_day = new Date()) {
     next_day.setDate(next_day.getDate() + 1);
     grouped_task_list(curr_day);
     api_get_tasks(function(result){
-    for (const task of result.tasks) {
-        display_task(task);
-    }
-    createCalendar();
-    addEventsToCal(result.tasks);
-    count_events_per_group(result.tasks);
-    // wire the response events 
-    $(".move_task").off("click").bind("click", move_task);
-    $(".description").off("click").bind("click", complete_task)
-    $(".edit_task").off("click").bind("click", edit_task);
-    $(".save_edit").off("click").bind("click", save_edit);
-    $(".undo_edit").off("click").bind("click", undo_edit);
-    $(".delete_task").off("click").bind("click", delete_task);
-    $(".advance_date").off("click").bind("click", increment_date);
-    $(".previous_date").off("click").bind("click", decrement_date);
-    $(".find_date").off("click").bind("click", find_date);
-    $("#delete_all_tasks").off("click").bind("click", delete_all_tasks);
-    // set all inputs to set flag
-    $("input").off("click").bind("change", input_keypress);
-    $("input").off("click").bind("keydown", input_keypress);
+        for (const task of result.tasks) {
+            display_task(task);
+        }
+        createCalendar();
+        addEventsToCal(result.tasks);
+        count_events_per_group(result.tasks);
+        // wire the response events 
+        $(".move_task").off("click").bind("click", move_task);
+        $(".description").off("click").bind("click", complete_task)
+        $(".edit_task").off("click").bind("click", edit_task);
+        $(".save_edit").off("click").bind("click", save_edit);
+        $(".undo_edit").off("click").bind("click", undo_edit);
+        $(".delete_task").off("click").bind("click", delete_task);
+        $("#delete_all_tasks").off("click").bind("click", delete_all_tasks);
+        // set all inputs to set flag
+        $("input").off("click").bind("change", input_keypress);
+        $("input").off("click").bind("keydown", input_keypress);
 
-    // add group selector events
-    $("#group_selector_homework").off("click").bind("click", setHomeworkEnabled);
-    $("#group_selector_extra").off("click").bind("click", setextracurricularsEnabled);
-    $("#group_selector_classes").off("click").bind("click", setClassesEnabled);
-    $("#group_selector_tests").off("click").bind("click", setTestsEnabled);
+        // add group selector events
+        $("#group_selector_homework").off("click").bind("click", setHomeworkEnabled);
+        $("#group_selector_extra").off("click").bind("click", setextracurricularsEnabled);
+        $("#group_selector_classes").off("click").bind("click", setClassesEnabled);
+        $("#group_selector_tests").off("click").bind("click", setTestsEnabled);
+        $(".settings_button").off("click").bind("click", toggleMenu);
+        $(".page_container").off("click").bind("click", closeMenu);
     });
 }
 
-// Run Entry function on page load
-$(document).ready(function() {
-    get_current_tasks()
-});
+// SETTINGS FUNCTIONS
+// TODO: Move to separate file
+var simpleClose = false;
+
+function toggleMenu() {
+    var menu = $("#settings_menu");
+    var text = $("#settings_text");
+    var startPos = $(".settings_button").offset();
+    var currentStyle = menu.css("opacity");
+    if (currentStyle === "0" && !simpleClose) {
+        menu.css("display", "flex");
+        menu.css("top", startPos.top);
+        menu.css("left", startPos.left);
+        menu.css("opacity", 0);
+        menu.css("height", "5%");
+        menu.css("width", "5%")
+        text.css("opacity", 0)
+        menu.animate({height: "75%", 
+                    width: "75%",  
+                    opacity: 1,
+                    top: "50%",
+                    left: "50%"
+                    },
+                    "fast");
+        text.animate({opacity: 1}, "fast");
+        text.fadeIn(100);
+    }
+    else if ((currentStyle === "1" || simpleClose) && currentStyle !== "0") {
+        menu.css("display", "flex");
+        menu.css("top", "50%");
+        menu.css("left", "50%");
+        menu.css("opacity", 1);
+        menu.css("height", "75%");
+        menu.css("width", "75%")
+        text.css("opacity", 1)
+        text.animate({opacity: 0}, "fast");
+        text.fadeOut(100);
+        menu.animate({height: "5%", 
+                    width: "5%",  
+                    opacity: 0,
+                    top: startPos.top,
+                    left: startPos.left
+                    },
+                    "fast");
+        menu.fadeOut(100);
+    }
+    simpleClose = false;
+}
+
+function closeMenu() {
+    simpleClose = true;
+    toggleMenu();
+}
+
