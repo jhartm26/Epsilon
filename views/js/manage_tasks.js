@@ -5,6 +5,11 @@ function api_get_tasks(success_function) {
             success:success_function});
 }
 
+function api_get_groups(success_function) {
+    $.ajax({url:"api/options/groups", type:"GET", 
+            success:success_function});
+}
+
 function api_create_task(task, success_function) {
     console.log("creating task with:", task)
     $.ajax({url:"api/tasks", type:"POST", 
@@ -31,6 +36,15 @@ function api_delete_task(task, success_function) {
             success:success_function});
 }
 
+function api_update_group_colors(colors, success_function) {
+    console.log("updating group colors with", colors);
+    colors.id = parseInt(colors.id)
+    $.ajax({url:"api/options/groups", type:"PUT",
+            data:JSON.stringify(colors),
+            contentType:"application/json; charset=utf-8",
+            success:success_function});
+}
+
 /* KEYPRESS MONITOR */
 
 function input_keypress(event) {
@@ -51,8 +65,8 @@ function move_task(event) {
     target_list = event.target.className.search("today") > 0 ? "tomorrow" : "today";
     api_update_task({'id':id, 'list':target_list},
                     function(result) { 
-                    console.log(result);
-                    get_current_tasks(new Date($('#date-tracker').html()));
+                        console.log(result);
+                        get_current_tasks(new Date($('#date-tracker').html()));
                     } );
 }
 
@@ -195,6 +209,22 @@ function delete_all_tasks() {
     }
 }
 
+function update_group_colors(event) {
+    console.log("save item", event.target.id);
+    id = event.target.id.replace("save_edit-","");
+    console.log("desc to save = ",$("#input-" + id).val());
+    api_create_task({description:$("#input-" + id).val(), 
+                    list:id, date:$("#input-" + id + "-date").val(), 
+                    literal_date: new Date($("#input-" + id + "-date").val()), 
+                    group:$("#input-" + id + "-group").val(), 
+                    time:$("#input-" + id + "-time").val()},
+                    function(result) { 
+                        console.log(result);
+                        get_current_tasks(new Date($('#date-tracker').html()));
+                        $("#current_input").val("")
+                    } );
+}
+
 // Creates and displays each task in the table
 function display_task(x) {
     completed = x.completed ? " completed" : "";
@@ -288,7 +318,8 @@ function grouped_task_list(day) {
     if (homeworkEnabled) {
     t +=' <div class="task_table_display"> ' +
         '   <div class="w3-col s6 w3-container w3-rightbar w3-border-gray tasks_table">' +
-        '     <div class="w3-row w3-xxlarge w3-bottombar w3-border-light-gray w3-margin-bottom">' +
+        '     <div class="w3-row w3-xxlarge w3-bottombar w3-border-light-gray w3-margin-bottom task_table_header">' +
+        '       <span class="Homework"></span>' +
         '       <h2>Homework</h2>' +
         '     </div>' +
         '     <table id="task-list-Homework" class="w3-table task-list">' +
@@ -307,7 +338,8 @@ function grouped_task_list(day) {
     if (extracurricularsEnabled) {
     t +=' <div class="task_table_display"> ' +
         '   <div class="w3-col s6 w3-container w3-rightbar w3-border-gray tasks_table">' +
-        '     <div class="w3-row w3-xxlarge w3-bottombar w3-border-light-gray w3-margin-bottom">' +
+        '     <div class="w3-row w3-xxlarge w3-bottombar w3-border-light-gray w3-margin-bottom task_table_header">' +
+        '       <span class="Extracurriculars"></span>' +
         '       <h2>Extracurriculars</h2>' +
         '     </div>' +
         '     <table id="task-list-Extracurriculars" class="w3-table task-list">' +
@@ -326,7 +358,8 @@ function grouped_task_list(day) {
     if (classesEnabled) {
     t +=' <div class="task_table_display"> ' +
         '   <div class="w3-col s6 w3-container w3-rightbar w3-border-gray tasks_table">' +
-        '     <div class="w3-row w3-xxlarge w3-bottombar w3-border-light-gray w3-margin-bottom">' +
+        '     <div class="w3-row w3-xxlarge w3-bottombar w3-border-light-gray w3-margin-bottom task_table_header">' +
+        '       <span class="Classes"></span>' +
         '       <h2>Classes</h2>' +
         '     </div>' +
         '     <table id="task-list-Classes" class="w3-table task-list">' +
@@ -345,7 +378,8 @@ function grouped_task_list(day) {
     if (testsEnabled) {
     t +=' <div class="task_table_display"> ' +
         '   <div class="w3-col s6 w3-container w3-rightbar w3-border-gray tasks_table">' +
-        '     <div class="w3-row w3-xxlarge w3-bottombar w3-border-light-gray w3-margin-bottom">' +
+        '     <div class="w3-row w3-xxlarge w3-bottombar w3-border-light-gray w3-margin-bottom task_table_header">' +
+        '       <span class="Tests"></span>' +
         '       <h2>Tests</h2>' +
         '     </div>' +
         '     <table id="task-list-Tests" class="w3-table task-list">' +
@@ -405,12 +439,42 @@ function get_current_tasks(curr_day = new Date()) {
         $("#group_selector_tests").off("click").bind("click", setTestsEnabled);
         $(".settings_button").off("click").bind("click", toggleMenu);
         $(".page_container").off("click").bind("click", closeMenu);
+        $("#submit_changes").off("click").bind("click", submitSettingsChanges);
+
+        assignGroupColorsFromDB();
     });
 }
 
 // SETTINGS FUNCTIONS
 // TODO: Move to separate file
 var simpleClose = false;
+
+function assignGroupColorsFromDB() {
+    api_get_groups(function(result){
+        $("body").find(".Homework").css("--color", result.groups[0].Homework);
+        $(".Extracurriculars").css("--color", result.groups[0].Extracurriculars);
+        $(".Classes").css("--color", result.groups[0].Classes);
+        $(".Tests").css("--color", result.groups[0].Tests);
+
+        $("#group_color_homework").val(result.groups[0].Homework);
+        $("#group_color_extra").val(result.groups[0].Extracurriculars);
+        $("#group_color_classes").val(result.groups[0].Classes);
+        $("#group_color_tests").val(result.groups[0].Tests);
+    });
+}
+
+function submitSettingsChanges() { 
+    api_update_group_colors({id:1, 
+                            Homework:$("#group_color_homework").val(), 
+                            Extracurriculars:$("#group_color_extra").val(), 
+                            Classes:$("#group_color_classes").val(), 
+                            Tests:$("#group_color_tests").val()}, 
+                            function(result) { 
+                                console.log(result);
+                                get_current_tasks(new Date($('#date-tracker').html()));
+                                $("#current_input").val("")
+                            });
+}
 
 function toggleMenu() {
     var menu = $("#settings_menu");

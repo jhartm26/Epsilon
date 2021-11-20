@@ -157,18 +157,25 @@ function createCalendar() {
     Calendar.prototype.drawEvents = function(day, element) {
         if(day.month() === this.current.month()) {
             var todaysEvents = this.events.reduce(function(memo, ev) {
-            eventDate = new Date(ev.date);
-            eventDate.setDate(eventDate.getDate() + 1);
-            if(sameDate(eventDate, new Date(day))) {
-                memo.push(ev);
-            }
-            return memo;
+                eventDate = new Date(ev.date);
+                eventDate.setDate(eventDate.getDate() + 1);
+                if(sameDate(eventDate, new Date(day))) {
+                    memo.push(ev);
+                }
+                return memo;
             }, []);
 
-            todaysEvents.forEach(function(ev) {
-            var evSpan = createElement('span', ev.color);
-            element.appendChild(evSpan);
-            });
+            var index = 0;
+            while(index < 3 && index < todaysEvents.length) {
+                var evSpan = createElement('span', todaysEvents[index].calendar);
+                element.appendChild(evSpan);
+                ++index;
+            }
+            if (todaysEvents.length > 3){
+                var elipsesSpan = createElement('span', "elipses_events");
+                elipsesSpan.textContent =  '...';
+                element.appendChild(elipsesSpan);
+            }
         }
     }
 
@@ -235,79 +242,83 @@ function createCalendar() {
 
         this.renderEvents(todaysEvents, details);
 
-        arrow.style.left = el.offsetLeft - el.parentNode.offsetLeft + 55 + 'px';
+        arrow.style.left = el.offsetLeft - el.parentNode.offsetLeft + 45 + 'px';
     }
 
     Calendar.prototype.renderEvents = function(events, ele) {
-    //Remove any events in the current details element
-    var currentWrapper = ele.querySelector('.events');
-    var wrapper = createElement('div', 'events in' + (currentWrapper ? ' new' : ''));
+        api_get_groups(function (result){
+            //Remove any events in the current details element
+            var currentWrapper = ele.querySelector('.events');
+            var wrapper = createElement('div', 'events in' + (currentWrapper ? ' new' : ''));
 
-    events.forEach(function(ev) {
-        var div = createElement('div', 'event');
-        var eventLeft = createElement('div', 'event-left')
-        var square = createElement('div', 'event-category ' + ev.color);
-        var span = createElement('span', '', ev.eventName);
+            events.forEach(function(ev) {
+                colors = result.groups[0];
+                var div = createElement('div', 'event');
+                var eventLeft = createElement('div', 'event-left')
+                var square = createElement('div', 'event-category ' + ev.calendar);
+                var jsquare = $(square).css("--color", colors[ev.calendar]);
+                var span = createElement('span', '', ev.eventName);
 
-        var timeStr = ev.time + " am";
-        if (ev.time > "12:59"){
-        var hour = parseInt(ev.time.slice(0,2));
-        var minute = parseInt(ev.time.slice(3, 5));
-        if (minute < 10) {
-            minute = minute + "0";
-        }
-        hour -= 12;
-        timeStr = hour + ":" + minute + " pm";
-        }
+                var timeStr = ev.time + " am";
+                if (ev.time > "12:59"){
+                var hour = parseInt(ev.time.slice(0,2));
+                var minute = parseInt(ev.time.slice(3, 5));
+                if (minute < 10) {
+                    minute = minute + "0";
+                }
+                hour -= 12;
+                timeStr = hour + ":" + minute + " pm";
+                }
 
-        var eventRight = createElement('div', 'event-right');
-        var time = createElement('span', 'light', timeStr);
-        var dueAt = createElement('span', 'light', 'Due at: ')
+                var eventRight = createElement('div', 'event-right');
+                var time = createElement('span', 'light', timeStr);
+                var dueAt = createElement('span', 'light', 'Due at: ')
 
-        eventRight.appendChild(dueAt);
-        eventRight.appendChild(time);
-        eventLeft.appendChild(square);
-        eventLeft.appendChild(span);
-        div.appendChild(eventLeft);
-        div.appendChild(eventRight);
-        wrapper.appendChild(div);
-    });
+                eventRight.appendChild(dueAt);
+                eventRight.appendChild(time);
+                $(eventLeft).append(jsquare);
+                eventLeft.appendChild(span);
+                div.appendChild(eventLeft);
+                div.appendChild(eventRight);
+                wrapper.appendChild(div);
+            });
 
-    if(!events.length) {
-        var div = createElement('div', 'event empty');
-        var span = createElement('span', '', 'No Events');
+            if(!events.length) {
+                var div = createElement('div', 'event empty');
+                var span = createElement('span', '', 'No Events');
 
-        div.appendChild(span);
-        wrapper.appendChild(div);
-    }
+                div.appendChild(span);
+                wrapper.appendChild(div);
+            }
 
-    if(currentWrapper) {
-        currentWrapper.className = 'events out';
-        currentWrapper.addEventListener('webkitAnimationEnd', function() {
-        currentWrapper.parentNode.removeChild(currentWrapper);
-        ele.appendChild(wrapper);
+            if(currentWrapper) {
+                currentWrapper.className = 'events out';
+                currentWrapper.addEventListener('webkitAnimationEnd', function() {
+                currentWrapper.parentNode.removeChild(currentWrapper);
+                ele.appendChild(wrapper);
+                });
+                currentWrapper.addEventListener('oanimationend', function() {
+                currentWrapper.parentNode.removeChild(currentWrapper);
+                ele.appendChild(wrapper);
+                });
+                currentWrapper.addEventListener('msAnimationEnd', function() {
+                currentWrapper.parentNode.removeChild(currentWrapper);
+                ele.appendChild(wrapper);
+                });
+                currentWrapper.addEventListener('animationend', function() {
+                currentWrapper.parentNode.removeChild(currentWrapper);
+                ele.appendChild(wrapper);
+                });
+            } else {
+                ele.appendChild(wrapper);
+            }
         });
-        currentWrapper.addEventListener('oanimationend', function() {
-        currentWrapper.parentNode.removeChild(currentWrapper);
-        ele.appendChild(wrapper);
-        });
-        currentWrapper.addEventListener('msAnimationEnd', function() {
-        currentWrapper.parentNode.removeChild(currentWrapper);
-        ele.appendChild(wrapper);
-        });
-        currentWrapper.addEventListener('animationend', function() {
-        currentWrapper.parentNode.removeChild(currentWrapper);
-        ele.appendChild(wrapper);
-        });
-    } else {
-        ele.appendChild(wrapper);
-    }
     }
 
     Calendar.prototype.drawLegend = function() {
     var legend = createElement('div', 'legend');
     var calendars = this.events.map(function(e) {
-        return e.calendar + '|' + e.color;
+        return e.calendar + '|' + e.calendar;
     }).reduce(function(memo, e) {
         if(memo.indexOf(e) === -1) {
         memo.push(e);
@@ -350,15 +361,15 @@ function createCalendar() {
 function addEventsToCal(taskList) {
     var data = [];
     for(const task of taskList) {
-    eventName = task.description;
-    date = task.literal_date;
-    var color;
-    if (task.group == "Homework") color = "green";
-    else if (task.group == "Extracurriculars") color = "yellow";
-    else if (task.group == "Classes") color = "blue";
-    else if (task.group == "Tests") color = "orange";
-    else color = "purple";
-    data.push({eventName, calendar: task.group, color, date, time:task.time});
+        eventName = task.description;
+        date = task.literal_date;
+        var color;
+        if (task.group == "Homework") color = "green";
+        else if (task.group == "Extracurriculars") color = "yellow";
+        else if (task.group == "Classes") color = "blue";
+        else if (task.group == "Tests") color = "orange";
+        else color = "purple";
+        data.push({eventName, calendar: task.group, color, date, time:task.time});
     }
     date = moment(new Date($('#date-tracker').html())).startOf('month');
     var calendar = new Calendar('#calendar', data, date);
@@ -377,10 +388,10 @@ function count_events_per_group(taskList) {
     else if (task.group == "Tests") testsCount++;
     }
 
-    h = '<span class="group_count">' + homeworkCount + '</span>';
-    e = '<span class="group_count">' + extraCount + '</span>';
-    c = '<span class="group_count">' + classesCount + '</span>';
-    t = '<span class="group_count">' + testsCount + '</span>';
+    h = '<span class="group_count Homework"><div class="group_count_text">' + homeworkCount + '</div></span>';
+    e = '<span class="group_count Extracurriculars"><div class="group_count_text">' + extraCount + '</div></span>';
+    c = '<span class="group_count Classes"><div class="group_count_text">' + classesCount + '</div></span>';
+    t = '<span class="group_count Tests"><div class="group_count_text">' + testsCount + '</div></span>';
 
     $("#group_selector_homework").append(h);
     $("#group_selector_extra").append(e);
