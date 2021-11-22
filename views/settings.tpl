@@ -34,7 +34,7 @@
                     </div>
                     <div class="setting_entry_container">
                         <span>Choose a theme:</span>
-                        <input id="input-task-group" style="height:25px; width:40%;" class="w3-input w3-border-gray"
+                        <input style="height:25px; width:40%;" class="w3-input w3-border-gray"
                           list="themes" autofocus placeholder="Select a theme..." required/>
                         <datalist id="themes">
                             <option value="Theme 1">
