@@ -63,8 +63,8 @@ def create_task():
         print(data)
         for key in data.keys():
             assert key in ["description","list","date","literal_date","group","time"], f"Illegal key '{key}'"
-        assert type(data['description']) is str, "Description is not a string."
-        assert len(data['description'].strip()) > 0, "Description is length zero."
+            assert type(data['description']) is str, "Description is not a string."
+            assert len(data['description'].strip()) > 0, "Description is length zero."
     except Exception as e:
         response.status="400 Bad Request:"+str(e)
         print(response.status)
@@ -101,14 +101,14 @@ def update_task():
         data = request.json
         for key in data.keys():
             assert key in ["id","description","completed","list","date","literal_date","time"], f"Illegal key '{key}'"
-        assert type(data['id']) is int, f"id '{id}' is not int"
-        if "description" in request:
-            assert type(data['description']) is str, "Description is not a string."
-            assert len(data['description'].strip()) > 0, "Description is length zero."
-        if "completed" in request:
-            assert type(data['completed']) is bool, "Completed is not a bool."
-        if "list" in request:
-            assert data['list'] in ["today","tomorrow"], "List must be 'today' or 'tomorrow'"
+            assert type(data['id']) is int, f"id '{id}' is not int"
+            if "description" in request:
+                assert type(data['description']) is str, "Description is not a string."
+                assert len(data['description'].strip()) > 0, "Description is length zero."
+            if "completed" in request:
+                assert type(data['completed']) is bool, "Completed is not a bool."
+            if "list" in request:
+                assert data['list'] in ["today","tomorrow"], "List must be 'today' or 'tomorrow'"
     except Exception as e:
         response.status="400 Bad Request:"+str(e)
         print(response.status)
@@ -144,6 +144,39 @@ def delete_task():
     # return 200 Success
     response.headers['Content-Type'] = 'application/json'
     return json.dumps({'success': True})
+
+# Settings api functions
+@put('/api/options/groups')
+def update_groups():
+    'update the colors of associated groups in the database'
+    try:
+        data = request.json
+        assert type(data['id']) is int, f"id '{id}' is not int"
+        assert type(data['Homework']) is str, "Homework is not a string."
+        assert type(data['Extracurriculars']) is str, "Extracurriculars is not a string."
+        assert type(data['Classes']) is str, "Classes is not a string."
+        assert type(data['Tests']) is str, "Tests is not a string."
+    except Exception as e:
+        response.status="400 Bad Request:"+str(e)
+        return
+    try:
+        task_table = taskbook_db.get_table('group')
+        task_table.update(row=data, keys=['id'])
+    except Exception as e:
+        response.status="409 Bad Request:"+str(e)
+        return
+    # return 200 Success
+    response.headers['Content-Type'] = 'application/json'
+    return json.dumps({'success': True})  
+
+@get('/api/options/groups')
+def retreive_groups():
+    'return a list of groups and associated colors'
+    response.headers['Content-Type'] = 'application/json'
+    response.headers['Cache-Control'] = 'no-cache'
+    group_table = taskbook_db.get_table('group')
+    groups = [dict(x) for x in group_table]
+    return { "groups": groups }
 
  #change one 9/29/2021
 application = default_app()
