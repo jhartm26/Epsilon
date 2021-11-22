@@ -12,6 +12,10 @@
     margin-right: 15px;
 }
 
+.settings_button:hover {
+    background: #727272;
+}
+
 #settings_menu {
     display: none;
     flex-direction: column;
