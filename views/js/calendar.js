@@ -374,27 +374,3 @@ function addEventsToCal(taskList) {
     date = moment(new Date($('#date-tracker').html())).startOf('month');
     var calendar = new Calendar('#calendar', data, date);
 };
-
-function count_events_per_group(taskList) {
-    var homeworkCount = 0;
-    var extraCount = 0;
-    var classesCount = 0;
-    var testsCount = 0;
-
-    for(const task of taskList) {
-    if (task.group == "Homework") homeworkCount++;
-    else if (task.group == "Extracurriculars") extraCount++;
-    else if (task.group == "Classes") classesCount++;
-    else if (task.group == "Tests") testsCount++;
-    }
-
-    h = '<span class="group_count Homework"><div class="group_count_text">' + homeworkCount + '</div></span>';
-    e = '<span class="group_count Extracurriculars"><div class="group_count_text">' + extraCount + '</div></span>';
-    c = '<span class="group_count Classes"><div class="group_count_text">' + classesCount + '</div></span>';
-    t = '<span class="group_count Tests"><div class="group_count_text">' + testsCount + '</div></span>';
-
-    $("#group_selector_homework").append(h);
-    $("#group_selector_extra").append(e);
-    $("#group_selector_classes").append(c);
-    $("#group_selector_tests").append(t);
-}

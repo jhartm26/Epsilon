@@ -3,6 +3,8 @@
 
 <style>
 % include("css/main.css")
+% include("css/settings.css")
+% include("css/calendar.css")
 </style>
 % include("settings.tpl")
 <div class="page_container">
@@ -17,7 +19,7 @@
                 <input id="input-task-date" style="height:25px; width:50vw;" class="w3-input w3-topbar w3-border-gray"
                   type="date" autofocus required>
                 <input id="input-task-group" style="height:25px; width:50vw;" class="w3-input w3-topbar w3-border-gray"
-                  list="groups" autofocus required/>
+                  list="groups" autofocus placeholder="Select a group..." required/>
                 <datalist id="groups">
                   <option value="Homework">
                   <option value="Classes">
@@ -45,6 +47,7 @@
 <script>
 % include("js/manage_tasks.js")
 % include("js/calendar.js")
+% include("js/settings.js")
 
 // Run Entry function on page load
 $(document).ready(function() {

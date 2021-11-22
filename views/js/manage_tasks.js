@@ -404,6 +404,30 @@ function grouped_task_list(day) {
     $("#current_input").val("");
 }
 
+function count_events_per_group(taskList) {
+    var homeworkCount = 0;
+    var extraCount = 0;
+    var classesCount = 0;
+    var testsCount = 0;
+
+    for(const task of taskList) {
+    if (task.group == "Homework") homeworkCount++;
+    else if (task.group == "Extracurriculars") extraCount++;
+    else if (task.group == "Classes") classesCount++;
+    else if (task.group == "Tests") testsCount++;
+    }
+
+    h = '<span class="group_count Homework"><div class="group_count_text">' + homeworkCount + '</div></span>';
+    e = '<span class="group_count Extracurriculars"><div class="group_count_text">' + extraCount + '</div></span>';
+    c = '<span class="group_count Classes"><div class="group_count_text">' + classesCount + '</div></span>';
+    t = '<span class="group_count Tests"><div class="group_count_text">' + testsCount + '</div></span>';
+
+    $("#group_selector_homework").append(h);
+    $("#group_selector_extra").append(e);
+    $("#group_selector_classes").append(c);
+    $("#group_selector_tests").append(t);
+}
+
 // Entry point for entire page
 // Reloads page each time it is called
 function get_current_tasks(curr_day = new Date()) {
@@ -427,7 +451,7 @@ function get_current_tasks(curr_day = new Date()) {
         $(".save_edit").off("click").bind("click", save_edit);
         $(".undo_edit").off("click").bind("click", undo_edit);
         $(".delete_task").off("click").bind("click", delete_task);
-        $("#delete_all_tasks").off("click").bind("click", delete_all_tasks);
+        //$("#delete_all_tasks").off("click").bind("click", delete_all_tasks); Temporarily removed
         // set all inputs to set flag
         $("input").off("click").bind("change", input_keypress);
         $("input").off("click").bind("keydown", input_keypress);
@@ -444,85 +468,3 @@ function get_current_tasks(curr_day = new Date()) {
         assignGroupColorsFromDB();
     });
 }
-
-// SETTINGS FUNCTIONS
-// TODO: Move to separate file
-var simpleClose = false;
-
-function assignGroupColorsFromDB() {
-    api_get_groups(function(result){
-        $("body").find(".Homework").css("--color", result.groups[0].Homework);
-        $(".Extracurriculars").css("--color", result.groups[0].Extracurriculars);
-        $(".Classes").css("--color", result.groups[0].Classes);
-        $(".Tests").css("--color", result.groups[0].Tests);
-
-        $("#group_color_homework").val(result.groups[0].Homework);
-        $("#group_color_extra").val(result.groups[0].Extracurriculars);
-        $("#group_color_classes").val(result.groups[0].Classes);
-        $("#group_color_tests").val(result.groups[0].Tests);
-    });
-}
-
-function submitSettingsChanges() { 
-    api_update_group_colors({id:1, 
-                            Homework:$("#group_color_homework").val(), 
-                            Extracurriculars:$("#group_color_extra").val(), 
-                            Classes:$("#group_color_classes").val(), 
-                            Tests:$("#group_color_tests").val()}, 
-                            function(result) { 
-                                console.log(result);
-                                get_current_tasks(new Date($('#date-tracker').html()));
-                                $("#current_input").val("")
-                            });
-}
-
-function toggleMenu() {
-    var menu = $("#settings_menu");
-    var text = $("#settings_text");
-    var startPos = $(".settings_button").offset();
-    var currentStyle = menu.css("opacity");
-    if (currentStyle === "0" && !simpleClose) {
-        menu.css("display", "flex");
-        menu.css("top", startPos.top);
-        menu.css("left", startPos.left);
-        menu.css("opacity", 0);
-        menu.css("height", "5%");
-        menu.css("width", "5%")
-        text.css("opacity", 0)
-        menu.animate({height: "75%", 
-                    width: "75%",  
-                    opacity: 1,
-                    top: "50%",
-                    left: "50%"
-                    },
-                    "fast");
-        text.animate({opacity: 1}, "fast");
-        text.fadeIn(100);
-    }
-    else if ((currentStyle === "1" || simpleClose) && currentStyle !== "0") {
-        menu.css("display", "flex");
-        menu.css("top", "50%");
-        menu.css("left", "50%");
-        menu.css("opacity", 1);
-        menu.css("height", "75%");
-        menu.css("width", "75%")
-        text.css("opacity", 1)
-        text.animate({opacity: 0}, "fast");
-        text.fadeOut(100);
-        menu.animate({height: "5%", 
-                    width: "5%",  
-                    opacity: 0,
-                    top: startPos.top,
-                    left: startPos.left
-                    },
-                    "fast");
-        menu.fadeOut(100);
-    }
-    simpleClose = false;
-}
-
-function closeMenu() {
-    simpleClose = true;
-    toggleMenu();
-}
-
