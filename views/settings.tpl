@@ -45,7 +45,7 @@
                     </div>
                     <div class="setting_entry_container">
                         <span>Delete all tasks: </span>
-                        <input id="delete_all_tasks verification" style="height:25px; width:40%;" class="w3-input w3-border-gray"
+                        <input id="verification" style="height:25px; width:40%;" class="w3-input w3-border-gray"
                           type="text" autofocus placeholder="Type 'Delete all tasks'" required/>
                     </div>
                 </div>
