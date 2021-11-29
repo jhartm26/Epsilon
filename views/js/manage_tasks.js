@@ -193,7 +193,6 @@ function delete_task(event) {
 }
 
 function delete_all_tasks() {
-    console.log($("#verification").val());
     if ($("#verification").val() === "Delete all tasks") {
         if (confirm("Are you sure you want to delete all tasks in your taskbook?")) {
             api_get_tasks(function(result){
@@ -206,6 +205,8 @@ function delete_all_tasks() {
                 get_current_tasks(new Date($('#date-tracker').html()));
             });
         }
+    }
+    else {
         alert("Please enter: 'Delete all tasks' without the quotes and press enter.");
         return;
     }
