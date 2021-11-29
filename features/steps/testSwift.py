@@ -89,5 +89,4 @@ def step_impl(context):
     TaskListDisplays = list(context.browser.find_elements_by_id("task_table_display"))
     testsTaskList = context.browser.find_elements_by_id("task-list-Tests")
     testsTask1Name = context.browser.find_element_by_id("description-1")
-    print(testsTask1Name.text)
     assert(testsTask1Name.text == "Test Edited")
