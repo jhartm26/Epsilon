@@ -193,18 +193,21 @@ function delete_task(event) {
 }
 
 function delete_all_tasks() {
-    if (confirm("Are you sure you want to delete all tasks in your taskbook?")) {
-        api_get_tasks(function(result){
-            for (const task of result.tasks) {  
-            api_delete_task({'id':task.id},
-                                function(result) { 
-                                console.log(result);
-                                });
-            }
-            get_current_tasks(new Date($('#date-tracker').html()));
-        });
+    if ($("#verification").val().toUpperCase() === "DELETE ALL TASKS") {
+        if (confirm("Are you sure you want to delete all tasks in your taskbook?")) {
+            api_get_tasks(function(result){
+                for (const task of result.tasks) {  
+                api_delete_task({'id':task.id},
+                                    function(result) { 
+                                    console.log(result);
+                                    });
+                }
+                get_current_tasks(new Date($('#date-tracker').html()));
+            });
+        }
     }
     else {
+        alert("Please enter: 'Delete all tasks' without the quotes and press enter.");
         return;
     }
 }
@@ -228,55 +231,26 @@ function update_group_colors(event) {
 // Creates and displays each task in the table
 function display_task(x) {
     completed = x.completed ? " completed" : "";
+    t = '<tr id="task-'+x.id+'" class="task' + completed + '">' + 
+        '  <td><span id="description-'+x.id+'" class="description' + completed + '">' + x.description + '</span>' + 
+        '      <span id="editor-'+x.id+'" class="existing-editor" hidden>' + 
+        '        <input id="input-'+x.id+'" style="height:22px" class="w3-input" type="text" autofocus required/>' +
+        '        <input id="input-'+x.id+'-date" style="height:22px; margin-left:10px" class="w3-input"' +
+        '         type="date" autofocus required> ' +
+        '      </span>' + 
+        '  </td>' +
+        '  <td class="icons" style="display:flex; flex-direction: row; align-items: center;">' +
+        '    <p style="margin-right: 10px; color: rgb(177, 177, 177);" class="description' + completed + '">Due: '+x.date+'</p>' +
+        '    <span id="edit_task-'+x.id+'" class="edit_task '+x.list+' material-icons">edit</span>' +
+        '    <span id="delete_task-'+x.id+'" class="delete_task material-icons">delete</span>' +
+        '    <span id="save_edit-'+x.id+'" hidden class="save_edit material-icons">done</span>' + 
+        '    <span id="undo_edit-'+x.id+'" hidden class="undo_edit material-icons">cancel</span>' +
+        '  </td>' +
+        '</tr>';
 
-    curr_day = new Date($('#date-tracker').html());
-    next_day = new Date(curr_day);
-    curr_day = formattedDate(curr_day);
-    next_day.setDate(next_day.getDate() + 1);
-    next_day = formattedDate(next_day);
-    if (x.date == curr_day || x.date == next_day) {
-        t = '<tr id="task-'+x.id+'" class="task">' + 
-            '  <td><span id="description-'+x.id+'" class="description' + completed + '">' + x.description + '</span>' + 
-            '      <span id="editor-'+x.id+'" class="existing-editor" hidden>' + 
-            '        <input id="input-'+x.id+'" style="height:22px" class="w3-input" type="text" autofocus required/>' +
-            '        <input id="input-'+x.id+'-date" style="height:22px; margin-left:10px" class="w3-input"' +
-            '         type="date" autofocus required> ' +
-            '      </span>' + 
-            '  </td>' +
-            '  <td class="icons">' +
-            '    <span id="edit_task-'+x.id+'" class="edit_task '+x.list+' material-icons">edit</span>' +
-            '    <span id="delete_task-'+x.id+'" class="delete_task material-icons">delete</span>' +
-            '    <span id="save_edit-'+x.id+'" hidden class="save_edit material-icons">done</span>' + 
-            '    <span id="undo_edit-'+x.id+'" hidden class="undo_edit material-icons">cancel</span>' +
-            '  </td>' +
-            '</tr>';
-        $("#task-list-" + x.group).append(t);
-        $("#input-" + x.id + "-date").val(x.date); 
-        $("#current_input").val("");
-    }
-
-    else {
-        t = '<tr id="task-'+x.id+'" class="task">' + 
-            '  <td><span id="description-'+x.id+'" class="description' + completed + '">' + x.description + '</span>' + 
-            '      <span id="editor-'+x.id+'" class="existing-editor" hidden>' + 
-            '        <input id="input-'+x.id+'" style="height:22px" class="w3-input" type="text" autofocus required/>' +
-            '        <input id="input-'+x.id+'-date" style="height:22px; margin-left:10px" class="w3-input"' +
-            '         type="date" autofocus required> ' +
-            '      </span>' + 
-            '  </td>' +
-            '  <td class="icons" style="display:flex; flex-direction: row; align-items: center;">' +
-            '    <p style="margin-right: 10px; color: rgb(177, 177, 177);" class="description' + completed + '">Due: '+x.date+'</p>' +
-            '    <span id="edit_task-'+x.id+'" class="edit_task '+x.list+' material-icons">edit</span>' +
-            '    <span id="delete_task-'+x.id+'" class="delete_task material-icons">delete</span>' +
-            '    <span id="save_edit-'+x.id+'" hidden class="save_edit material-icons">done</span>' + 
-            '    <span id="undo_edit-'+x.id+'" hidden class="undo_edit material-icons">cancel</span>' +
-            '  </td>' +
-            '</tr>';
-
-        $("#task-list-" + x.group).append(t);
-        $("#input-" + x.id + "-date").val(x.date); 
-        $("#current_input").val("");
-    }
+    $("#task-list-" + x.group).append(t);
+    $("#input-" + x.id + "-date").val(x.date); 
+    $("#current_input").val("");
 }
 
 // Properly formats dates for comparison functions
@@ -451,7 +425,11 @@ function get_current_tasks(curr_day = new Date()) {
         $(".save_edit").off("click").bind("click", save_edit);
         $(".undo_edit").off("click").bind("click", undo_edit);
         $(".delete_task").off("click").bind("click", delete_task);
-        //$("#delete_all_tasks").off("click").bind("click", delete_all_tasks); Temporarily removed
+        $("#verification").off("keypress").bind("keypress", function(e) {
+            if (e.key === "Enter") {
+                delete_all_tasks();
+            }
+        });
         // set all inputs to set flag
         $("input").off("click").bind("change", input_keypress);
         $("input").off("click").bind("keydown", input_keypress);
@@ -461,9 +439,21 @@ function get_current_tasks(curr_day = new Date()) {
         $("#group_selector_extra").off("click").bind("click", setextracurricularsEnabled);
         $("#group_selector_classes").off("click").bind("click", setClassesEnabled);
         $("#group_selector_tests").off("click").bind("click", setTestsEnabled);
-        $(".settings_button").off("click").bind("click", toggleMenu);
-        $(".page_container").off("click").bind("click", closeMenu);
+        $(".page_container").off("click").bind("click", function(e) {
+            closeMenu();
+            $("#verification").val("");
+        });
+        $(".settings_button").off("click").bind("click", function(e) {
+            toggleMenu();
+            $("#verification").val("");
+        });
         $("#submit_changes").off("click").bind("click", submitSettingsChanges);
+        $("#verification").keypress(function(event){
+            var keycode = (event.keyCode ? event.keyCode : event.which);
+            if(keycode === '13') {
+                delete_all_tasks();
+            }
+        });
 
         assignGroupColorsFromDB();
     });
