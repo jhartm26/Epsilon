@@ -46,8 +46,6 @@ def step_impl(context):
 #Test for deletion of a task
 @when ("We click the trash icon on an existing task")
 def step_impl(context):
-    context.browser.get("https://jjgrayg.pythonanywhere.com") 
-    context.browser.find_element_by_id('group_selector_tests').click()
     testsTaskList = list(context.browser.find_elements_by_id('task_table_display'))
     testsTaskList = context.browser.find_element_by_id('task-list-Tests')
     testsTasks = list(context.browser.find_elements_by_tag_name('tr'))
@@ -55,8 +53,6 @@ def step_impl(context):
 
 @then ("the task will be removed from the taskbook")
 def step_impl(context):
-    context.browser.get("https://jjgrayg.pythonanywhere.com") 
-    context.browser.find_element_by_id('group_selector_tests').click()
     testsTaskList = list(context.browser.find_elements_by_id('task_table_display'))
     testsTaskList = context.browser.find_element_by_id('task-list-Tests')
     testsTasks = list(context.browser.find_elements_by_tag_name('tr'))
@@ -65,7 +61,6 @@ def step_impl(context):
 #Test for editing of text for tasks
 @when ("we click the edit button on an existing task, change the information, and click the check mark")
 def step_impl(context):
-    context.browser.get("https://jjgrayg.pythonanywhere.com") 
     context.browser.find_element_by_id('group_selector_tests').click()
     testsTaskList = list(context.browser.find_elements_by_id('task_table_display'))
     testsTaskList = context.browser.find_element_by_id('task-list-Tests')
@@ -88,11 +83,11 @@ def step_impl(context):
 
 @then ("the task will take on the edits")
 def step_impl(context):
-    # context.browser.get("https://jjgrayg.pythonanywhere.com") 
-    # context.browser.find_element_by_id('group_selector_tests').click()
-    # TaskListDisplays = list(context.browser.find_elements_by_id('task_table_display'))
-    # testsTaskList = context.browser.find_elements_by_id('task-list-Tests')
-    # testsTask1Name = context.browser.find_element_by_id('description-1')
-    # print(testsTask1Name.text)
-    # assert(testsTask1Name[1].text == "Test Edited")
-    assert(True)
+    context.browser.get("https://jjgrayg.pythonanywhere.com") 
+    context.browser.find_element_by_id('group_selector_tests').click()
+    context.browser.implicitly_wait(20)
+    TaskListDisplays = list(context.browser.find_elements_by_id("task_table_display"))
+    testsTaskList = context.browser.find_elements_by_id("task-list-Tests")
+    testsTask1Name = context.browser.find_element_by_id("description-1")
+    print(testsTask1Name.text)
+    assert(testsTask1Name.text == "Test Edited")
