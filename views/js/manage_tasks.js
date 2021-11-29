@@ -439,8 +439,14 @@ function get_current_tasks(curr_day = new Date()) {
         $("#group_selector_extra").off("click").bind("click", setextracurricularsEnabled);
         $("#group_selector_classes").off("click").bind("click", setClassesEnabled);
         $("#group_selector_tests").off("click").bind("click", setTestsEnabled);
-        $(".page_container").off("click").bind("click", closeMenu);
-        $(".settings_button").off("click").bind("click", toggleMenu);
+        $(".page_container").off("click").bind("click", function(e) {
+            closeMenu();
+            $("#verification").val("");
+        });
+        $(".settings_button").off("click").bind("click", function(e) {
+            toggleMenu();
+            $("#verification").val("");
+        });
         $("#submit_changes").off("click").bind("click", submitSettingsChanges);
         $("#verification").keypress(function(event){
             var keycode = (event.keyCode ? event.keyCode : event.which);
