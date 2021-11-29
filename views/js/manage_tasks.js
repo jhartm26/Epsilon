@@ -193,7 +193,7 @@ function delete_task(event) {
 }
 
 function delete_all_tasks() {
-    if ($("#verification").val().toUpperCase() === "Delete all tasks".toUpperCase()) {
+    if ($("#verification").val().toUpperCase() === "DELETE ALL TASKS") {
         if (confirm("Are you sure you want to delete all tasks in your taskbook?")) {
             api_get_tasks(function(result){
                 for (const task of result.tasks) {  
