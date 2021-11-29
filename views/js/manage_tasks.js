@@ -193,18 +193,21 @@ function delete_task(event) {
 }
 
 function delete_all_tasks() {
-    if (confirm("Are you sure you want to delete all tasks in your taskbook?")) {
-        api_get_tasks(function(result){
-            for (const task of result.tasks) {  
-            api_delete_task({'id':task.id},
-                                function(result) { 
-                                console.log(result);
-                                });
-            }
-            get_current_tasks(new Date($('#date-tracker').html()));
-        });
+    if ($("#verification").val() === "Delete all tasks") {
+        if (confirm("Are you sure you want to delete all tasks in your taskbook?")) {
+            api_get_tasks(function(result){
+                for (const task of result.tasks) {  
+                api_delete_task({'id':task.id},
+                                    function(result) { 
+                                    console.log(result);
+                                    });
+                }
+                get_current_tasks(new Date($('#date-tracker').html()));
+            });
+        }
     }
     else {
+        alert("Please type 'Delete all tasks' if you would like to remove all tasks from the book");
         return;
     }
 }
@@ -451,7 +454,11 @@ function get_current_tasks(curr_day = new Date()) {
         $(".save_edit").off("click").bind("click", save_edit);
         $(".undo_edit").off("click").bind("click", undo_edit);
         $(".delete_task").off("click").bind("click", delete_task);
-        //$("#delete_all_tasks").off("click").bind("click", delete_all_tasks); Temporarily removed
+        $("#verification").off("keypress").bind("keypress", function(e) {
+            if (e.key === "Enter") {
+                delete_all_tasks();
+            }
+        });
         // set all inputs to set flag
         $("input").off("click").bind("change", input_keypress);
         $("input").off("click").bind("keydown", input_keypress);
