@@ -448,7 +448,7 @@ function get_current_tasks(curr_day = new Date()) {
             $("#verification").val("");
         });
         $("#submit_changes").off("click").bind("click", submitSettingsChanges);
-        $("#verification").keypress(function(e){
+        $("#verification").off("keypress").bind("keypress", function(e){
             if (e.key === "Enter") {
                 delete_all_tasks();
             }
