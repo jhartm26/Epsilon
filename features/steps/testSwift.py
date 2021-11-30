@@ -5,6 +5,7 @@ import string
 import time
 import datetime
 
+#Test for creation of a task
 @given('we have navigated to {url}')
 def step_impl(context, url):
     browser = webdriver.Chrome()
@@ -37,13 +38,14 @@ def step_impl(context):
 def step_impl(context):
     context.browser.get("https://jjgrayg.pythonanywhere.com") 
     context.browser.find_element_by_id('group_selector_tests').click()
+    context.browser.implicitly_wait(5)
     testsTaskList = list(context.browser.find_elements_by_id('task_table_display'))
     testsTaskList = context.browser.find_element_by_id('task-list-Tests')
     testsTasks = list(context.browser.find_elements_by_tag_name('tr'))
     assert(len(testsTasks) > 0)
 
 #################################################################################
-#Test for deletion of a task
+#Test for editing and deletion of a task
 @when ("We click the trash icon on an existing task")
 def step_impl(context):
     testsTaskList = list(context.browser.find_elements_by_id('task_table_display'))
@@ -85,7 +87,7 @@ def step_impl(context):
 def step_impl(context):
     context.browser.get("https://jjgrayg.pythonanywhere.com") 
     context.browser.find_element_by_id('group_selector_tests').click()
-    context.browser.implicitly_wait(20)
+    context.browser.implicitly_wait(5)
     TaskListDisplays = list(context.browser.find_elements_by_id("task_table_display"))
     testsTaskList = context.browser.find_elements_by_id("task-list-Tests")
     testsTask1Name = context.browser.find_element_by_id("description-1")
