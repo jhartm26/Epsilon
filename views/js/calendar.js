@@ -242,7 +242,11 @@ function createCalendar() {
 
         this.renderEvents(todaysEvents, details);
 
-        arrow.style.left = el.offsetLeft - el.parentNode.offsetLeft + 45 + 'px';
+        var arrowOffset;
+        if (countNumberEnabled() === 4) arrowOffset = 25;
+        else arrowOffset = 30
+
+        arrow.style.left = el.offsetLeft - el.parentNode.offsetLeft + arrowOffset + 'px';
     }
 
     Calendar.prototype.renderEvents = function(events, ele) {
