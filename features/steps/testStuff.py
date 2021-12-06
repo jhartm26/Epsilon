@@ -25,7 +25,7 @@ def step_impl(context):
     taskName_element.send_keys(Keys.RETURN)
 
     taskDate_element = context.browser.find_element_by_id('input-task-date')
-    taskDate_element.send_keys('11292021')
+    taskDate_element.send_keys('12062021')
     taskDate_element.send_keys(Keys.RETURN)
 
     taskGroup_element = context.browser.find_element_by_id('input-task-group')
@@ -67,7 +67,7 @@ def step_impl(context):
     taskName_element.send_keys(Keys.RETURN)
 
     taskDate_element = context.browser.find_element_by_id('input-1-date')
-    taskDate_element.send_keys('11292021')
+    taskDate_element.send_keys('12062021')
     taskDate_element.send_keys(Keys.RETURN)
 
     context.browser.find_element_by_id('save_edit-1').click()
@@ -84,6 +84,7 @@ def step_impl(context):
 #Test for editing and deletion of a task
 @when ("We click the trash icon on an existing task")
 def step_impl(context):
+    time.sleep(15)
     context.browser.find_element_by_id('group_selector_tests').click()
     testsTaskList = list(context.browser.find_elements_by_id('task_table_display'))
     testsTaskList = context.browser.find_element_by_id('task-list-Tests')
@@ -111,7 +112,7 @@ def step_impl(context):
     taskName_element.send_keys(Keys.RETURN)
 
     taskDate_element = context.browser.find_element_by_id('input-task-date')
-    taskDate_element.send_keys('11292021')
+    taskDate_element.send_keys('12062021')
     taskDate_element.send_keys(Keys.RETURN)
 
     taskGroup_element = context.browser.find_element_by_id('input-task-group')
@@ -130,7 +131,7 @@ def step_impl(context):
     taskName_element.send_keys(Keys.RETURN)
 
     taskDate_element = context.browser.find_element_by_id('input-task-date')
-    taskDate_element.send_keys('11292021')
+    taskDate_element.send_keys('12062021')
     taskDate_element.send_keys(Keys.RETURN)
 
     taskGroup_element = context.browser.find_element_by_id('input-task-group')
