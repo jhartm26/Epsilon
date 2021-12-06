@@ -81,10 +81,10 @@ def step_impl(context):
     #print(testsTask1Name.text)
     assert(testsTask1Name.text == "Test Edited")
 
+#################################################################################
 #Test for editing and deletion of a task
 @when ("We click the trash icon on an existing task")
 def step_impl(context):
-    time.sleep(15)
     context.browser.find_element_by_id('group_selector_tests').click()
     testsTaskList = list(context.browser.find_elements_by_id('task_table_display'))
     testsTaskList = context.browser.find_element_by_id('task-list-Tests')
@@ -105,7 +105,6 @@ def step_impl(context):
 
 @when('multiple tasks are added')
 def step_impl(context):
-    time.sleep(30)
     context.browser.find_element_by_id('group_selector_tests').click()
     taskName_element = context.browser.find_element_by_id('input-task')
     taskName_element.send_keys('Test2')
@@ -130,17 +129,17 @@ def step_impl(context):
     taskName_element.send_keys('Test3')
     taskName_element.send_keys(Keys.RETURN)
 
-    taskDate_element = context.browser.find_element_by_id('input-task-date')
-    taskDate_element.send_keys('12062021')
-    taskDate_element.send_keys(Keys.RETURN)
+    # taskDate_element = context.browser.find_element_by_id('input-task-date')
+    # taskDate_element.send_keys('12062021')
+    # taskDate_element.send_keys(Keys.RETURN)
 
-    taskGroup_element = context.browser.find_element_by_id('input-task-group')
-    taskGroup_element.send_keys('Tests')
-    taskGroup_element.send_keys(Keys.RETURN)
+    # taskGroup_element = context.browser.find_element_by_id('input-task-group')
+    # taskGroup_element.send_keys('Tests')
+    # taskGroup_element.send_keys(Keys.RETURN)
 
-    taskTime_element = context.browser.find_element_by_id('input-task-time')
-    taskTime_element.send_keys('0200PM')
-    taskTime_element.send_keys(Keys.RETURN)
+    # taskTime_element = context.browser.find_element_by_id('input-task-time')
+    # taskTime_element.send_keys('0200PM')
+    # taskTime_element.send_keys(Keys.RETURN)
 
     context.browser.find_element_by_id('save_edit-task').click()
     context.browser.find_element_by_id('undo_edit-task').click()
@@ -150,6 +149,7 @@ def step_impl(context):
     context.browser.find_element_by_id('settings_button').click()
     settingsWindow = context.browser.find_element_by_id('settings_menu')
     deleteTasksInput = context.browser.find_element_by_id('verification')
+    #context.browser.execute_script("arguments[0].innerText = 'delete all tasks'", deleteTasksInput)
     deleteTasksInput.send_keys('delete all tasks')
     deleteTasksInput.send_keys(Keys.RETURN)
     deleteTasksInput.send_keys(Keys.RETURN)
