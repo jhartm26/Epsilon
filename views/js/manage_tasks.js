@@ -91,6 +91,7 @@ function edit_task(event) {
     $("#move_task-"+id).prop('hidden', true);
     $("#description-"+id).prop('hidden', true);
     $("#edit_task-"+id).prop('hidden', true);
+    $("#dueDate-task-"+id).prop('hidden', true);
     $("#delete_task-"+id).prop('hidden', true);
     // show the editor
     $("#editor-"+id).css('display', 'flex');
@@ -156,6 +157,9 @@ function undo_edit(event) {
     id = event.target.id.replace("undo_edit-","")
     console.log("undo",[id])
     $("#input-" + id).val("");
+    $("#input-" + id + "-date").val("");
+    $("#input-" + id + "-group").val("");
+    $("#input-" + id + "-time").val("");
     if ((id != "today") & (id != "tomorrow") & (id != "task")) {
         // hide the editor
         $("#editor-"+id).css('display', 'none');
@@ -167,6 +171,7 @@ function undo_edit(event) {
         $("#filler-"+id).prop('hidden', false);
         $("#edit_task-"+id).prop('hidden', false);
         $("#delete_task-"+id).prop('hidden', false);
+        $("#dueDate-task-"+id).prop('hidden', false);
     }
     else {
         $("#save_edit-"+id).prop('hidden', true);
@@ -176,6 +181,7 @@ function undo_edit(event) {
         $("#filler-"+id).prop('hidden', false);
         $("#edit_task-"+id).prop('hidden', false);
         $("#delete_task-"+id).prop('hidden', false);
+        $("#dueDate-task-"+id).prop('hidden', true);
     }
     
     // set the editing flag
@@ -235,8 +241,9 @@ function display_task(x) {
         '  <td><span id="description-'+x.id+'" class="description' + completed + '">' + x.description + '</span>' + 
         '      <span id="editor-'+x.id+'" class="existing-editor" hidden>' + 
         '        <input id="input-'+x.id+'" style="height:22px" class="w3-input" type="text" autofocus required/>' +
-        '        <input id="input-'+x.id+'-date" style="height:22px; margin-left:10px" class="w3-input"' +
-        '         type="date" autofocus required> ' +
+        '        <input id="input-'+x.id+'-date" style="height:22px; margin-left:10px" class="w3-input" type="date" autofocus required> ' +
+        '        <input id="input-'+x.id+'-group" style="height:25px;" class="w3-input w3-topbar w3-border-gray" list="groups" autofocus placeholder="Select a group..." required/>' +
+        '        <input id="input-'+x.id+'-time" style="height:25px;" class="w3-input w3-topbar w3-border-gray" type="time" autofocus required/>' +
         '      </span>' + 
         '  </td>' +
         '  <td class="icons" style="display:flex; flex-direction: row; align-items: center;">' +
@@ -326,81 +333,81 @@ function grouped_task_list(day) {
     var buttons = "";
 
     if (homeworkEnabled) {
-    t +=' <div class="task_table_display"> ' +
-        '   <div class="w3-col s6 w3-container w3-rightbar w3-border-gray tasks_table">' +
-        '     <div class="w3-row w3-xxlarge w3-bottombar w3-border-light-gray w3-margin-bottom task_table_header">' +
-        '       <span class="Homework"></span>' +
-        '       <h2>Homework</h2>' +
-        '     </div>' +
-        '     <table id="task-list-Homework" class="w3-table task-list">' +
-        '     </table>' +
-        '   </div>' +
-        '   <div class="w3-row w3-bottombar w3-border-light-gray w3-margin-bottom w3-margin-top" style="width: 95%"></div>' +
-        ' </div> ';
-    buttons +='   <div id="group_selector_homework" class="group_button active">';
+        t +=' <div class="task_table_display"> ' +
+            '   <div class="w3-col s6 w3-container w3-rightbar w3-border-gray tasks_table">' +
+            '     <div class="w3-row w3-xxlarge w3-bottombar w3-border-light-gray w3-margin-bottom task_table_header">' +
+            '       <span class="Homework"></span>' +
+            '       <h2>Homework</h2>' +
+            '     </div>' +
+            '     <table id="task-list-Homework" class="w3-table task-list">' +
+            '     </table>' +
+            '   </div>' +
+            '   <div class="w3-row w3-bottombar w3-border-light-gray w3-margin-bottom w3-margin-top" style="width: 95%"></div>' +
+            ' </div> ';
+        buttons +='   <div id="group_selector_homework" class="group_button active">';
     }
     else {
-    buttons +='   <div id="group_selector_homework" class="group_button inactive">';
+        buttons +='   <div id="group_selector_homework" class="group_button inactive">';
     }
     buttons +='     <p class="group_label">Homework</p>'+
             '   </div>';
 
     if (extracurricularsEnabled) {
     t +=' <div class="task_table_display"> ' +
-        '   <div class="w3-col s6 w3-container w3-rightbar w3-border-gray tasks_table">' +
-        '     <div class="w3-row w3-xxlarge w3-bottombar w3-border-light-gray w3-margin-bottom task_table_header">' +
-        '       <span class="Extracurriculars"></span>' +
-        '       <h2>Extracurriculars</h2>' +
-        '     </div>' +
-        '     <table id="task-list-Extracurriculars" class="w3-table task-list">' +
-        '     </table>' +
-        '   </div>' +
-        '   <div class="w3-row w3-bottombar w3-border-light-gray w3-margin-bottom w3-margin-top" style="width: 95%"></div>' +
-        ' </div> ';
-    buttons +='   <div id="group_selector_extra" class="group_button active">';
+            '   <div class="w3-col s6 w3-container w3-rightbar w3-border-gray tasks_table">' +
+            '     <div class="w3-row w3-xxlarge w3-bottombar w3-border-light-gray w3-margin-bottom task_table_header">' +
+            '       <span class="Extracurriculars"></span>' +
+            '       <h2>Extracurriculars</h2>' +
+            '     </div>' +
+            '     <table id="task-list-Extracurriculars" class="w3-table task-list">' +
+            '     </table>' +
+            '   </div>' +
+            '   <div class="w3-row w3-bottombar w3-border-light-gray w3-margin-bottom w3-margin-top" style="width: 95%"></div>' +
+            ' </div> ';
+        buttons +='   <div id="group_selector_extra" class="group_button active">';
     }
     else {
-    buttons +='   <div id="group_selector_extra" class="group_button inactive">';
+        buttons +='   <div id="group_selector_extra" class="group_button inactive">';
     }
     buttons +='     <p class="group_label">Extracurriculars</p>'+
             '   </div>';
 
     if (classesEnabled) {
-    t +=' <div class="task_table_display"> ' +
-        '   <div class="w3-col s6 w3-container w3-rightbar w3-border-gray tasks_table">' +
-        '     <div class="w3-row w3-xxlarge w3-bottombar w3-border-light-gray w3-margin-bottom task_table_header">' +
-        '       <span class="Classes"></span>' +
-        '       <h2>Classes</h2>' +
-        '     </div>' +
-        '     <table id="task-list-Classes" class="w3-table task-list">' +
-        '     </table>' +
-        '   </div>' +
-        '   <div class="w3-row w3-bottombar w3-border-light-gray w3-margin-bottom w3-margin-top" style="width: 95%"></div>' +
-        ' </div> ';
-    buttons +='   <div id="group_selector_classes" class="group_button active">';
+        t +=' <div class="task_table_display"> ' +
+            '   <div class="w3-col s6 w3-container w3-rightbar w3-border-gray tasks_table">' +
+            '     <div class="w3-row w3-xxlarge w3-bottombar w3-border-light-gray w3-margin-bottom task_table_header">' +
+            '       <span class="Classes"></span>' +
+            '       <h2>Classes</h2>' +
+            '     </div>' +
+            '     <table id="task-list-Classes" class="w3-table task-list">' +
+            '     </table>' +
+            '   </div>' +
+            '   <div class="w3-row w3-bottombar w3-border-light-gray w3-margin-bottom w3-margin-top" style="width: 95%"></div>' +
+            ' </div> ';
+        buttons +='   <div id="group_selector_classes" class="group_button active">';
     }
     else {
-    buttons +='   <div id="group_selector_classes" class="group_button inactive">';
+        buttons +='   <div id="group_selector_classes" class="group_button inactive">';
     }
     buttons +='     <p class="group_label">Classes</p>'+
             '   </div>';
 
     if (testsEnabled) {
-    t +=' <div class="task_table_display"> ' +
-        '   <div class="w3-col s6 w3-container w3-rightbar w3-border-gray tasks_table">' +
-        '     <div class="w3-row w3-xxlarge w3-bottombar w3-border-light-gray w3-margin-bottom task_table_header">' +
-        '       <span class="Tests"></span>' +
-        '       <h2>Tests</h2>' +
-        '     </div>' +
-        '     <table id="task-list-Tests" class="w3-table task-list">' +
-        '     </table>' +
-        '   </div>' +
-        '   <div class="w3-row w3-bottombar w3-border-light-gray w3-margin-bottom w3-margin-top" style="width: 95%"></div>' +
-        ' </div> ';
-    buttons +='   <div id="group_selector_tests" class="group_button active">';
+        t +=' <div class="task_table_display"> ' +
+            '   <div class="w3-col s6 w3-container w3-rightbar w3-border-gray tasks_table">' +
+            '     <div class="w3-row w3-xxlarge w3-bottombar w3-border-light-gray w3-margin-bottom task_table_header">' +
+            '       <span class="Tests"></span>' +
+            '       <h2>Tests</h2>' +
+            '     </div>' +
+            '     <table id="task-list-Tests" class="w3-table task-list">' +
+            '     </table>' +
+            '   </div>' +
+            '   <div class="w3-row w3-bottombar w3-border-light-gray w3-margin-bottom w3-margin-top" style="width: 95%"></div>' +
+            ' </div> ';
+        buttons +='   <div id="group_selector_tests" class="group_button active">';
     }
     else {
-    buttons +='   <div id="group_selector_tests" class="group_button inactive">';
+        buttons +='   <div id="group_selector_tests" class="group_button inactive">';
     }
     buttons +='     <p class="group_label">Tests</p>'+
             '   </div>';
