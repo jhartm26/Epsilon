@@ -1,5 +1,8 @@
 from behave import *
 from selenium import webdriver
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 import string
 import time
@@ -11,7 +14,6 @@ def step_impl(context, url):
     browser = webdriver.Chrome()
     browser.get(url)
     context.browser = browser
-    #time.sleep(200)
 
 @when('name, date, time, and group for task is written')
 def step_impl(context):
@@ -36,31 +38,16 @@ def step_impl(context):
 
 @then('we have a task in Tests group')
 def step_impl(context):
-    context.browser.get("https://jjgrayg.pythonanywhere.com") 
+    context.browser.get("https://www.getstuffdoneplanner.com/") 
     context.browser.find_element_by_id('group_selector_tests').click()
-    context.browser.implicitly_wait(5)
     testsTaskList = list(context.browser.find_elements_by_id('task_table_display'))
     testsTaskList = context.browser.find_element_by_id('task-list-Tests')
     testsTasks = list(context.browser.find_elements_by_tag_name('tr'))
     assert(len(testsTasks) > 0)
 
 #################################################################################
-#Test for editing and deletion of a task
-@when ("We click the trash icon on an existing task")
-def step_impl(context):
-    testsTaskList = list(context.browser.find_elements_by_id('task_table_display'))
-    testsTaskList = context.browser.find_element_by_id('task-list-Tests')
-    testsTasks = list(context.browser.find_elements_by_tag_name('tr'))
-    context.browser.find_element_by_id('delete_task-1').click()
-
-@then ("the task will be removed from the taskbook")
-def step_impl(context):
-    testsTaskList = list(context.browser.find_elements_by_id('task_table_display'))
-    testsTaskList = context.browser.find_element_by_id('task-list-Tests')
-    testsTasks = list(context.browser.find_elements_by_tag_name('tr'))
-    assert(len(testsTasks) == 0)
-
 #Test for editing of text for tasks
+
 @when ("we click the edit button on an existing task, change the information, and click the check mark")
 def step_impl(context):
     context.browser.find_element_by_id('group_selector_tests').click()
@@ -85,10 +72,23 @@ def step_impl(context):
 
 @then ("the task will take on the edits")
 def step_impl(context):
-    context.browser.get("https://jjgrayg.pythonanywhere.com") 
-    context.browser.find_element_by_id('group_selector_tests').click()
-    context.browser.implicitly_wait(5)
     TaskListDisplays = list(context.browser.find_elements_by_id("task_table_display"))
     testsTaskList = context.browser.find_elements_by_id("task-list-Tests")
     testsTask1Name = context.browser.find_element_by_id("description-1")
     assert(testsTask1Name.text == "Test Edited")
+
+#Test for editing and deletion of a task
+@when ("We click the trash icon on an existing task")
+def step_impl(context):
+    context.browser.find_element_by_id('group_selector_tests').click()
+    testsTaskList = list(context.browser.find_elements_by_id('task_table_display'))
+    testsTaskList = context.browser.find_element_by_id('task-list-Tests')
+    testsTasks = list(context.browser.find_elements_by_tag_name('tr'))
+    context.browser.find_element_by_id('delete_task-1').click()
+
+@then ("the task will be removed from the taskbook")
+def step_impl(context):
+    testsTaskList = list(context.browser.find_elements_by_id('task_table_display'))
+    testsTaskList = context.browser.find_element_by_id('task-list-Tests')
+    testsTasks = list(context.browser.find_elements_by_tag_name('tr'))
+    assert(len(testsTasks) == 0)
