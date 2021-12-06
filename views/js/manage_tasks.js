@@ -240,7 +240,7 @@ function display_task(x) {
         '      </span>' + 
         '  </td>' +
         '  <td class="icons" style="display:flex; flex-direction: row; align-items: center;">' +
-        '    <p style="margin-right: 10px; color: rgb(177, 177, 177);" class="description' + completed + '">Due: '+x.date+'</p>' +
+        '    <p style="margin-right: 10px; color: rgb(177, 177, 177);" class="dueDate description' + completed + '" id="dueDate-task-' + x.id + '">Due: '+x.date+'</p>' +
         '    <span id="edit_task-'+x.id+'" class="edit_task '+x.list+' material-icons">edit</span>' +
         '    <span id="delete_task-'+x.id+'" class="delete_task material-icons">delete</span>' +
         '    <span id="save_edit-'+x.id+'" hidden class="save_edit material-icons">done</span>' + 
@@ -271,13 +271,49 @@ var extracurricularsEnabled = false;
 var classesEnabled = true;
 var testsEnabled = false;
 
-function setHomeworkEnabled() {homeworkEnabled = !homeworkEnabled; manageAtLeastOneEnabled(); get_current_tasks(new Date($('#date-tracker').html())); }
-function setextracurricularsEnabled() {extracurricularsEnabled = !extracurricularsEnabled; manageAtLeastOneEnabled(); get_current_tasks(new Date($('#date-tracker').html())); }
-function setClassesEnabled() {classesEnabled = !classesEnabled; manageAtLeastOneEnabled(); get_current_tasks(new Date($('#date-tracker').html())); }
-function setTestsEnabled() {testsEnabled = !testsEnabled; manageAtLeastOneEnabled(); get_current_tasks(new Date($('#date-tracker').html())); }
+function setHomeworkEnabled() {homeworkEnabled = !homeworkEnabled; manageAtLeastOneEnabled(); get_current_tasks(new Date($('#date-tracker').html())); manageSizing(); }
+function setextracurricularsEnabled() {extracurricularsEnabled = !extracurricularsEnabled; manageAtLeastOneEnabled(); get_current_tasks(new Date($('#date-tracker').html())); manageSizing(); }
+function setClassesEnabled() {classesEnabled = !classesEnabled; manageAtLeastOneEnabled(); get_current_tasks(new Date($('#date-tracker').html())); manageSizing(); }
+function setTestsEnabled() {testsEnabled = !testsEnabled; manageAtLeastOneEnabled(); get_current_tasks(new Date($('#date-tracker').html())); manageSizing(); }
+function countNumberEnabled() {
+    var num = 0;
+    if (homeworkEnabled) num++;
+    if (testsEnabled) num++;
+    if (classesEnabled) num++;
+    if (extracurricularsEnabled) num++;
+    return num
+}
 function manageAtLeastOneEnabled() {
-    if (!homeworkEnabled && !extracurricularsEnabled && !classesEnabled && !testsEnabled) {
-    homeworkEnabled = true;
+    if (!(countNumberEnabled() >= 1)) {
+        homeworkEnabled = true;
+    }
+}
+function manageSizing() {
+    var sidebar = $("#sidebar");
+    if (countNumberEnabled() === 4) {
+        sidebar.css({"min-width" : "25%"});
+        setTimeout (function() {
+            var dueDates = $(".dueDate");
+            var descriptions = $(".description");
+            console.log(dueDates);
+            dueDates.prop("hidden", true);
+        }, 325);
+    }
+    else {
+        sidebar.css({"min-width" : "30%"});
+        setTimeout (function() {
+            var dueDates = $(".dueDate");
+            console.log(dueDates);
+            dueDates.prop("hidden", false);
+            descriptions.css({"padding-left" : "8px"})
+        }, 325);
+    }
+
+    if (countNumberEnabled() >= 3) {
+        setTimeout(function() {
+            var descriptions = $(".description");
+            descriptions.css({"padding-left" : "0px"})
+        }, 325);
     }
 }
 ///////////////////////////////
@@ -448,13 +484,13 @@ function get_current_tasks(curr_day = new Date()) {
             $("#verification").val("");
         });
         $("#submit_changes").off("click").bind("click", submitSettingsChanges);
-        $("#verification").keypress(function(event){
-            var keycode = (event.keyCode ? event.keyCode : event.which);
-            if(keycode === '13') {
+        $("#verification").off("keypress").bind("keypress", function(e){
+            if (e.key === "Enter") {
                 delete_all_tasks();
             }
         });
-
-        assignGroupColorsFromDB();
+        setTimeout(function() {
+            assignGroupColorsFromDB();
+        }, 300);
     });
 }
