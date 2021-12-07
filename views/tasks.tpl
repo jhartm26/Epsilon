@@ -18,14 +18,13 @@
                   type="text" autofocus placeholder="Add an item..." required/>
                 <input id="input-task-date" style="height:25px; width:50vw;" class="w3-input w3-topbar w3-border-gray"
                   type="date" autofocus required>
-                <input id="input-task-group" style="height:25px; width:50vw;" class="w3-input w3-topbar w3-border-gray"
-                  list="groups" autofocus placeholder="Select a group..." required/>
-                <datalist id="groups">
-                  <option value="Homework">
-                  <option value="Classes">
-                  <option value="Extracurriculars">
-                  <option value="Tests">
-                </datalist>
+                <select name="task-group" id="input-task-group" style="height:50px; width:50vw;" class="w3-input w3-topbar w3-border-gray"
+                autofocus placeholder="Select a group..." required>
+                  <option value="Homework">Homework</option>
+                  <option value="Classes">Classes</option>
+                  <option value="Extracurriculars" selected>Extracurriculars</option>
+                  <option value="Tests">Tests</option>
+                </select>
                 <input id="input-task-time" style="height:25px; width:50vw;" class="w3-input w3-topbar w3-border-gray"
                   type="time" autofocus required/>
               </span>
