@@ -1,18 +1,34 @@
+function get_session_id() {
+    sessionID = document.cookie.split('; ').find(row => row.startsWith("sessionID"));
+    sessionID = sessionID.substring(10);
+    return sessionID;
+}
+
 /* API CALLS */
+function api_create_session(success_function) {
+    console.log("creating new session");
+    $.ajax({url:"api/sessions", type:"GET", 
+            success:success_function});
+}
+
+function api_setup_db(success_function, sessionID) {
+    $.ajax({url:"api/sessions/" + sessionID, type:"POST", 
+            success:success_function});
+}
 
 function api_get_tasks(success_function) {
-    $.ajax({url:"api/tasks", type:"GET", 
+    $.ajax({url:"api/tasks/" + get_session_id(), type:"GET", 
             success:success_function});
 }
 
 function api_get_groups(success_function) {
-    $.ajax({url:"api/options/groups", type:"GET", 
+    $.ajax({url:"api/options/groups/" + get_session_id(), type:"GET", 
             success:success_function});
 }
 
 function api_create_task(task, success_function) {
     console.log("creating task with:", task)
-    $.ajax({url:"api/tasks", type:"POST", 
+    $.ajax({url:"api/tasks/" + get_session_id(), type:"POST", 
             data:JSON.stringify(task), 
             contentType:"application/json; charset=utf-8",
             success:success_function});
@@ -21,7 +37,7 @@ function api_create_task(task, success_function) {
 function api_update_task(task, success_function) {
     console.log("updating task with:", task)
     task.id = parseInt(task.id)
-    $.ajax({url:"api/tasks", type:"PUT", 
+    $.ajax({url:"api/tasks/" + get_session_id(), type:"PUT", 
             data:JSON.stringify(task), 
             contentType:"application/json; charset=utf-8",
             success:success_function});
@@ -30,7 +46,7 @@ function api_update_task(task, success_function) {
 function api_delete_task(task, success_function) {
     console.log("deleting task with:", task)
     task.id = parseInt(task.id)
-    $.ajax({url:"api/tasks", type:"DELETE", 
+    $.ajax({url:"api/tasks/" + get_session_id(), type:"DELETE", 
             data:JSON.stringify(task), 
             contentType:"application/json; charset=utf-8",
             success:success_function});
@@ -38,7 +54,6 @@ function api_delete_task(task, success_function) {
 
 function api_update_group_colors(colors, success_function) {
     console.log("updating group colors with", colors);
-    colors.id = parseInt(colors.id)
     $.ajax({url:"api/options/groups", type:"PUT",
             data:JSON.stringify(colors),
             contentType:"application/json; charset=utf-8",
@@ -297,11 +312,12 @@ function manageAtLeastOneEnabled() {
 }
 function manageSizing() {
     var sidebar = $("#sidebar");
+    var dueDates = $(".dueDate");
+    var descriptions = $(".description");
     if (countNumberEnabled() === 4) {
         sidebar.css({"min-width" : "25%"});
         setTimeout (function() {
             var dueDates = $(".dueDate");
-            var descriptions = $(".description");
             console.log(dueDates);
             dueDates.prop("hidden", true);
         }, 325);
@@ -309,7 +325,6 @@ function manageSizing() {
     else {
         sidebar.css({"min-width" : "30%"});
         setTimeout (function() {
-            var dueDates = $(".dueDate");
             console.log(dueDates);
             dueDates.prop("hidden", false);
             descriptions.css({"padding-left" : "8px"})
@@ -318,7 +333,6 @@ function manageSizing() {
 
     if (countNumberEnabled() >= 3) {
         setTimeout(function() {
-            var descriptions = $(".description");
             descriptions.css({"padding-left" : "0px"})
         }, 325);
     }

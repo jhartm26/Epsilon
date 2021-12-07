@@ -3,20 +3,21 @@ var simpleClose = false;
 
 function assignGroupColorsFromDB() {
     api_get_groups(function(result){
-        $("body").find(".Homework").css("--color", result.groups[0].Homework);
-        $(".Extracurriculars").css("--color", result.groups[0].Extracurriculars);
-        $(".Classes").css("--color", result.groups[0].Classes);
-        $(".Tests").css("--color", result.groups[0].Tests);
+        $("body").find(".Homework").css("--color", result.groups.Homework);
+        $(".Extracurriculars").css("--color", result.groups.Extracurriculars);
+        $(".Classes").css("--color", result.groups.Classes);
+        $(".Tests").css("--color", result.groups.Tests);
 
-        $("#group_color_homework").val(result.groups[0].Homework);
-        $("#group_color_extra").val(result.groups[0].Extracurriculars);
-        $("#group_color_classes").val(result.groups[0].Classes);
-        $("#group_color_tests").val(result.groups[0].Tests);
+        $("#group_color_homework").val(result.groups.Homework);
+        $("#group_color_extra").val(result.groups.Extracurriculars);
+        $("#group_color_classes").val(result.groups.Classes);
+        $("#group_color_tests").val(result.groups.Tests);
     });
 }
 
 function submitSettingsChanges() { 
-    api_update_group_colors({id:1, 
+    id = get_session_id();
+    api_update_group_colors({id, 
                             Homework:$("#group_color_homework").val(), 
                             Extracurriculars:$("#group_color_extra").val(), 
                             Classes:$("#group_color_classes").val(), 

@@ -50,7 +50,17 @@
 
 // Run Entry function on page load
 $(document).ready(function() {
-    get_current_tasks()
+  if (!document.cookie.split('; ').find(row => row.startsWith("sessionID"))) {
+    api_create_session(function(result) {
+      document.cookie = "sessionID=" + result.sessionID + "; expires=Fri, 31 Dec 9999 23:59:59 GMT; SameSite=None; Secure";
+      api_setup_db(function(){
+        console.log("db setup successful")
+      }, result.sessionID)
+    })
+  };
+  setTimeout(() => {
+    get_current_tasks();
+  }, 500);
 });
 </script>
 
