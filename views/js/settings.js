@@ -169,20 +169,39 @@ function handleAccountButtons() {
         $(".account_buttons").css({ "display": "flex",
                                     "flex-direction": "column",
                                     "align-items": "center"});
+        j = '<span>Welcome, ' + username + '!</span>' +
+            '<span>Not you? <span id="logout2" style="color: #161616; cursor: pointer;">Logout</span></span>';;
     }
     else {
         t = '<span id="login" class="pointer">Login</span>' +
             '<span id="divider"> | </span>' +
             '<span id="register" class="pointer">Register</span>'
+        j = '<div>' + 
+            '   <span id="login2" class="pointer">Login</span>' +
+            '   <span id="divider"> | </span>' +
+            '   <span id="register2" class="pointer">Register</span>' + 
+            '</div>';
     }
     $(".account_buttons").append(t);
+    $("#banner_account_info").append(j);
     $("#logout").off("click").bind("click", handleLogout);
+    $("#logout2").off("click").bind("click", handleLogout);
     $("#login").off("click").bind("click", function() {
         register = false;
         handleLoginFormDisplay();
         toggleLogin();
     });
+    $("#login2").off("click").bind("click", function() {
+        register = false;
+        handleLoginFormDisplay();
+        toggleLogin();
+    });
     $("#register").off("click").bind("click", function() {
+        register = true;
+        handleLoginFormDisplay();
+        toggleLogin();
+    });
+    $("#register2").off("click").bind("click", function() {
         register = true;
         handleLoginFormDisplay();
         toggleLogin();

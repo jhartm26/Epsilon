@@ -545,7 +545,7 @@ function get_current_tasks(curr_day = new Date()) {
             $("#verification").val("");
         });
         $(".banner").off("click").bind("click", function(e) {
-            if (e.target.id != "settings_button") {
+            if (e.target.id != "settings_button" && e.target.id != "login" && e.target.id != "register" && e.target.id != "login2" && e.target.id != "register2") {
                 closeLogin();
                 closeMenu();
             }
