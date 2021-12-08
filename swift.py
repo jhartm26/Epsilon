@@ -189,7 +189,7 @@ def update_task(sessionID):
     try:
         data = request.json
         for key in data.keys():
-            assert key in ["id","description","completed","list","date","literal_date","time"], f"Illegal key '{key}'"
+            assert key in ["id","description","completed","list","date","literal_date","time","group"], f"Illegal key '{key}'"
             assert type(data['id']) is int, f"id '{id}' is not int"
             if "description" in request:
                 assert type(data['description']) is str, "Description is not a string."
