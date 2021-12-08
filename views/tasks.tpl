@@ -50,6 +50,7 @@
 
 // Run Entry function on page load
 $(document).ready(function() {
+  register = true;
   if (!document.cookie.split('; ').find(row => row.startsWith("sessionID"))) {
     api_create_session(function(result) {
       document.cookie = "sessionID=" + result.sessionID + "; expires=Fri, 31 Dec 9999 23:59:59 GMT; SameSite=None; Secure";

@@ -1,7 +1,32 @@
+/* COOKIE HANDLING */
 function get_session_id() {
     sessionID = document.cookie.split('; ').find(row => row.startsWith("sessionID"));
     sessionID = sessionID.substring(10);
     return sessionID;
+}
+
+function create_login_cookie(sessionID, username) {
+    d = new Date();
+    d.setTime(d.getTime() + (2592000000));
+    expires = "expires="+ d.toUTCString();
+    document.cookie = "loggedIn=true;" + expires;
+    document.cookie = "username=" + username + ";" + expires;
+    document.cookie = "sessionID=" + sessionID + ";" + expires + "; SameSite=None; Secure";
+}
+
+function delete_cookie(name, path, domain) {
+    if( get_cookie( name ) ) {
+        document.cookie = name + "=" +
+        ((path) ? ";path="+path:"")+
+        ((domain)?";domain="+domain:"") +
+        ";expires=Thu, 01 Jan 1970 00:00:01 GMT";
+    }
+}
+
+function get_cookie(name){
+    return document.cookie.split(';').some(c => {
+        return c.trim().startsWith(name + '=');
+    });
 }
 
 /* API CALLS */
@@ -13,6 +38,20 @@ function api_create_session(success_function) {
 
 function api_setup_db(success_function, sessionID) {
     $.ajax({url:"api/sessions/" + sessionID, type:"POST", 
+            success:success_function});
+}
+
+function api_create_account(user, success_function) {
+    $.ajax({url:"/api/accounts/" + get_session_id(), type:"POST", 
+            data:JSON.stringify(user),
+            contentType:"application/json; charset=utf-8",
+            success:success_function});
+}
+
+function api_login(user, success_function) {
+    $.ajax({url:"/api/accounts/login", type:"POST", 
+            data:JSON.stringify(user),
+            contentType:"application/json; charset=utf-8",
             success:success_function});
 }
 
@@ -488,8 +527,8 @@ function get_current_tasks(curr_day = new Date()) {
             }
         });
         // set all inputs to set flag
-        $("input").off("click").bind("change", input_keypress);
-        $("input").off("click").bind("keydown", input_keypress);
+        $("input").off("change").bind("change", input_keypress);
+        $("input").off("keydown").bind("keydown", input_keypress);
 
         // add group selector events
         $("#group_selector_homework").off("click").bind("click", setHomeworkEnabled);
@@ -497,6 +536,7 @@ function get_current_tasks(curr_day = new Date()) {
         $("#group_selector_classes").off("click").bind("click", setClassesEnabled);
         $("#group_selector_tests").off("click").bind("click", setTestsEnabled);
         $(".page_container").off("click").bind("click", function(e) {
+            closeLogin();
             closeMenu();
             $("#verification").val("");
         });
@@ -504,14 +544,25 @@ function get_current_tasks(curr_day = new Date()) {
             toggleMenu();
             $("#verification").val("");
         });
+        $(".banner").off("click").bind("click", function(e) {
+            if (e.target.id != "settings_button") {
+                closeLogin();
+                closeMenu();
+            }
+        })
         $("#submit_changes").off("click").bind("click", submitSettingsChanges);
         $("#verification").off("keypress").bind("keypress", function(e){
             if (e.key === "Enter") {
                 delete_all_tasks();
             }
         });
+        $('#settings_menu').off("click").bind("click", function(e) {
+            if (e.target.id != "login" && e.target.id != "register")
+                closeLogin()
+        });
         setTimeout(function() {
             assignGroupColorsFromDB();
-        }, 300);
+        }, 400);
+        handleAccountButtons();
     });
 }

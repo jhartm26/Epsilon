@@ -114,11 +114,12 @@ def create_session(sessionID):
 def create_account(sessionID):
     try:
         data = request.json
-        username = data['username']
-        password = data['password']
-        hashed_password = hash_password(password)
+        print(data)
+        user = data['username']
+        secret = data['password']
+        hashed_password = hash_password(secret)
         table = taskbook_db.get_table('user_data')
-        table.insert(dict(username, sessionID, hashed_password))
+        table.insert(dict(username=user,  pass_storage=hashed_password, sessionID=sessionID))
     except Exception as e:
         response.status="409 Bad Request:"+str(e)
         print(response.status)
@@ -130,11 +131,17 @@ def create_account(sessionID):
 def login():
     try:
         data = request.json
-        username = data['username']
+        user = data['username']
         password = data['password']
         table = taskbook_db.get_table('user_data')
-        entry = table.find_one(username)
-        print(entry)
+        entry = table.find_one(username=user)
+        if (entry == None):
+            raise ValueError(" Invalid User")
+        if (not verify_password(password, entry['pass_storage'])):
+            raise ValueError(" Invalid Password")
+        else:
+            return { "username": entry['username'],
+                     "sessionID": entry['sessionID']}
     except Exception as e:
         response.status="409 Bad Request:"+str(e)
         print(response.status)
