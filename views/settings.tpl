@@ -52,14 +52,17 @@
 
                 <div id="right_menu">
                     <img src="https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png" alt="Placeholder">
-                    <div class="account_buttons">
-                        <span id="login" class="pointer">Login</span>
-                        <span id="divider"> | </span>
-                        <span id="logout" class="pointer">Log out</span>
-                    </div>
+                    <div class="account_buttons"></div>
                 </div>
             </div>
             <span id="submit_changes">Save Changes</span>
+        </div>
+    </div>
+</div>
+<div id="login_window">
+    <div id="login_text">
+        <h2 id="login_header"></h2>
+        <div class="login_form">
         </div>
     </div>
 </div>

@@ -256,7 +256,7 @@ function createCalendar() {
             var wrapper = createElement('div', 'events in' + (currentWrapper ? ' new' : ''));
 
             events.forEach(function(ev) {
-                colors = result.groups[0];
+                colors = result.groups;
                 var div = createElement('div', 'event');
                 var eventLeft = createElement('div', 'event-left')
                 var square = createElement('div', 'event-category ' + ev.calendar);
