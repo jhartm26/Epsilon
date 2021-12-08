@@ -161,6 +161,7 @@ function handleLoginFormDisplay(){
 
 function handleAccountButtons() {
     $(".account_buttons").empty();
+    $("#banner_account_info").empty();
     if (get_cookie("loggedIn") && get_cookie("username")) {
         username = document.cookie.split('; ').find(row => row.startsWith("username"));
         username = username.substring(9);
