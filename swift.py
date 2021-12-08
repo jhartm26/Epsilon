@@ -29,13 +29,7 @@ from sqlalchemy.sql.elements import Null
 
 def generate_random_string():
     return ''.join(random.SystemRandom().choice(string.ascii_letters + string.digits) for _ in range(55))
-
-def get_user_id(db, name):
-    session_table = db.get_table('user_data')
-    entry = session_table.find_one(username=name)
-    print(entry)
-    return Null
-
+    
 def hash_password(password):
     salt = os.urandom(32)
     key = hashlib.pbkdf2_hmac('sha256', password.encode('utf-8'), salt, 100000)
@@ -60,14 +54,6 @@ def verify_password(password, stored_password):
 @route('/tasks')
 def tasks():
     return template("tasks.tpl") 
-
-@route('/login')
-def login():
-    return template("login.tpl") 
-
-@route('/register')
-def login():
-    return template("register.tpl") 
 
 # ---------------------------
 # task REST api 
