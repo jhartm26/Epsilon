@@ -359,7 +359,7 @@ function manageSizing() {
             var dueDates = $(".dueDate");
             console.log(dueDates);
             dueDates.prop("hidden", true);
-        }, 325);
+        }, 500);
     }
     else {
         sidebar.css({"min-width" : "30%"});
@@ -367,13 +367,13 @@ function manageSizing() {
             console.log(dueDates);
             dueDates.prop("hidden", false);
             descriptions.css({"padding-left" : "8px"})
-        }, 325);
+        }, 500);
     }
 
     if (countNumberEnabled() >= 3) {
         setTimeout(function() {
             descriptions.css({"padding-left" : "0px"})
-        }, 325);
+        }, 500);
     }
 }
 ///////////////////////////////
@@ -560,9 +560,7 @@ function get_current_tasks(curr_day = new Date()) {
             if (e.target.id != "login" && e.target.id != "register")
                 closeLogin()
         });
-        setTimeout(function() {
-            assignGroupColorsFromDB();
-        }, 400);
+        assignGroupColorsFromDB();
         handleAccountButtons();
     });
 }
