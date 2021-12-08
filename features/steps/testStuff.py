@@ -79,7 +79,7 @@ def step_impl(context):
 
 @then ("the task will take on the edits")
 def step_impl(context):
-    #time.sleep(5)
+    time.sleep(5)
     TaskListDisplays = list(context.browser.find_elements_by_id("task_table_display"))
     extraTaskList = context.browser.find_elements_by_id("task-list-Extracurriculars")
     extraTask1Name = context.browser.find_element_by_id("description-1")
