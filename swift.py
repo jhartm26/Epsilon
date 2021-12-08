@@ -85,7 +85,7 @@ def get_session():
     'generates a session id'
     try:
         current_sessions = []
-        for x in taskbook_db.query("SELECT name FROM sqlite_schema WHERE type ='table' AND name NOT LIKE 'sqlite_%';"):
+        for x in taskbook_db.query("SELECT name FROM sqlite_master WHERE type ='table' AND name NOT LIKE 'sqlite_%';"):
             current_sessions.append(x['name'])
         generatedId = generate_random_string()
         while (generatedId in current_sessions):
