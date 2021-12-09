@@ -92,7 +92,7 @@ function toggleLogin(){
         login.css("height", "5%");
         login.css("width", "5%")
         text.css("opacity", 0)
-        login.animate({height: "40%", 
+        login.animate({height: "55%", 
                     width: "15%",  
                     opacity: 1,
                     top: "50%",
@@ -107,7 +107,7 @@ function toggleLogin(){
         login.css("top", "50%");
         login.css("left", "50%");
         login.css("opacity", 1);
-        login.css("height", "40%");
+        login.css("height", "55%");
         login.css("width", "15%")
         text.css("opacity", 1)
         text.animate({opacity: 0}, "fast");
